@@ -50,13 +50,11 @@ func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte
 		return []byte{}, err
 	}
 	defer resp.Body.Close()
-	fmt.Println("response Status:", resp.Status)
 	return ioutil.ReadAll(resp.Body)
 }
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
 	messageBytes, err := json.Marshal(message)
-	fmt.Println(string(messageBytes))
 	if err != nil {
 		return &http.Response{}, err
 	}
