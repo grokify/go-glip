@@ -9,6 +9,9 @@ $ go get github.com/grokify/glip-go-webhook
 
 ## Usage
 
+1. Create a webhook URL for a conversation in Glip
+2. Use the code below to send a message to the webhook URL
+
 ```go
 package main
 
