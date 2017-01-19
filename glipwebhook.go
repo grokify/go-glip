@@ -77,3 +77,33 @@ type GlipWebhookMessage struct {
 	Title    string `json:"title",omitempty`
 	Body     string `json:"body,omitempty"`
 }
+
+type GlipWebhookResponse struct {
+	Status  string           `json:"status,omitempty"`
+	Message string           `json:"message,omitempty"`
+	Error   GlipWebhookError `json:error,omitempty`
+}
+
+type GlipWebhookError struct {
+	Code           string                   `json:"code,omitempty"`
+	Message        string                   `json:"message,omitempty"`
+	HttpStatusCode int                      `json:"http_status_code,omitempty"`
+	ResponseData   string                   `json:"response_data,omitempty"`
+	Response       GlipWebhookErrorResponse `json:"response,omitempty"`
+}
+
+func (gwerr *GlipWebhookError) Inflate() {
+	if len(gwerr.ResponseData) > 2 {
+		res := GlipWebhookResponse{}
+		err := json.Unmarshal([]byte(gwerr.ResponseData), &res)
+		if err == nil {
+			gwerr.Response = res
+		}
+	}
+}
+
+type GlipWebhookErrorResponse struct {
+	Code       string `json:"code"`
+	Message    string `json:"message"`
+	Validation bool   `json:validation"`
+}
