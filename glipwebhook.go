@@ -94,7 +94,7 @@ type GlipWebhookError struct {
 
 func (gwerr *GlipWebhookError) Inflate() {
 	if len(gwerr.ResponseData) > 2 {
-		res := GlipWebhookResponse{}
+		res := GlipWebhookErrorResponse{}
 		err := json.Unmarshal([]byte(gwerr.ResponseData), &res)
 		if err == nil {
 			gwerr.Response = res
@@ -105,5 +105,5 @@ func (gwerr *GlipWebhookError) Inflate() {
 type GlipWebhookErrorResponse struct {
 	Code       string `json:"code"`
 	Message    string `json:"message"`
-	Validation bool   `json:validation"`
+	Validation bool   `json:"validation"`
 }
