@@ -1,4 +1,4 @@
-- 2017-01-25
+- 2017-01-24
   - Add `PostMessageFast` using `fasthttp` client request
   - Bugfix for struct name
 - 2017-01-19
