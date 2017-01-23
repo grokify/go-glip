@@ -84,15 +84,15 @@ func (client *GlipWebhookClient) PostMessageFast(message GlipWebhookMessage) (*f
 	req := fasthttp.AcquireRequest()
 	resp := fasthttp.AcquireResponse()
 
-	req.Header.SetMethod(HTTP_METHOD_POST)
-	req.Header.SetRequestURI(client.WebhookUrl)
-	req.Header.Set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
-
 	bytes, err := json.Marshal(message)
 	if err != nil {
 		return req, resp, err
 	}
 	req.SetBody(bytes)
+
+	req.Header.SetMethod(HTTP_METHOD_POST)
+	req.Header.SetRequestURI(client.WebhookUrl)
+	req.Header.Set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
 
 	err = client.FastClient.Do(req, resp)
 	return req, resp, err
