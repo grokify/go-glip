@@ -43,6 +43,8 @@ func sendMessage() {
 
 ### Using `fasthttp` client
 
+Posts can be made using [`fasthttp`](https://github.com/valyala/fasthttp).
+
 ```go
 import (
     "fmt"
