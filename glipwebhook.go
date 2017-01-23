@@ -10,14 +10,19 @@ import (
 	"regexp"
 
 	"github.com/grokify/gotilla/net/httputil"
+	"github.com/valyala/fasthttp"
 )
 
 const (
 	GLIP_WEBHOOK_BASE_URL = "https://hooks.glip.com/webhook/"
+	CONTENT_TYPE_JSON     = "application/json"
+	CONTENT_TYPE_HEADER   = "Content-Type"
+	HTTP_METHOD_POST      = "POST"
 )
 
 type GlipWebhookClient struct {
 	HttpClient *http.Client
+	FastClient fasthttp.Client
 	WebhookUrl string
 }
 
@@ -29,6 +34,7 @@ func NewGlipWebhookClient(urlOrGuid string) (GlipWebhookClient, error) {
 	}
 	client.WebhookUrl = url
 	client.HttpClient = httputil.NewHttpClient()
+	client.FastClient = fasthttp.Client{}
 	return client, nil
 }
 
@@ -62,19 +68,40 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 }
 
 func (client *GlipWebhookClient) PostJSON(url string, bodyBytes []byte) (*http.Response, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyBytes))
+	req, err := http.NewRequest(HTTP_METHOD_POST, url, bytes.NewBuffer(bodyBytes))
 	if err != nil {
 		return &http.Response{}, err
 	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
 	httpClient := httputil.NewHttpClient()
 	return httpClient.Do(req)
+}
+
+// Request using fasthttp
+// Recycle request and response using fasthttp.ReleaseRequest(req) and
+// fasthttp.ReleaseResponse(resp)
+func (client *GlipWebhookClient) PostMessageFast(message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
+	req := fasthttp.AcquireRequest()
+	resp := fasthttp.AcquireResponse()
+
+	req.Header.SetMethod(HTTP_METHOD_POST)
+	req.Header.SetRequestURI(client.WebhookUrl)
+	req.Header.Set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
+
+	bytes, err := json.Marshal(message)
+	if err != nil {
+		return req, resp, err
+	}
+	req.SetBody(bytes)
+
+	err = client.FastClient.Do(req, resp)
+	return req, resp, err
 }
 
 type GlipWebhookMessage struct {
 	Icon     string `json:"icon,omitempty"`
 	Activity string `json:"activity,omitempty"`
-	Title    string `json:"title",omitempty`
+	Title    string `json:"title,omitempty"`
 	Body     string `json:"body,omitempty"`
 }
 

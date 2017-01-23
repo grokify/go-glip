@@ -13,14 +13,12 @@ $ go get github.com/grokify/glip-go-webhook
 2. Use the code below to send a message to the webhook URL
 
 ```go
-package main
-
 import (
     "fmt"
     "github.com/grokify/glip-go-webhook"
 )
 
-func main() {
+func sendMessage() {
     // Can instantiate webhook client with full URL or GUID only
     url := "https://hooks.glip.com/webhook/00001111-2222-3333-4444-555566667777"
     client, err := glipwebhook.NewGlipWebhookClient(url)
@@ -34,12 +32,39 @@ func main() {
         Title:    "Test Message Title",
         Body:     "Test Message Body"}
 
-    bytes, err := client.SendMessage(msg)
-    if err != nil {
-        panic("BAD RESPONSE")
-    }
-    fmt.Printf("%v\n", string(bytes))
+    resp, err := client.PostMessage(msg)
 
-    fmt.Println("DONE")
+    respBodyBytes, err := client.SendMessage(msg)
+    if err == nil {
+        fmt.Printf("%v\n", string(respBodyBytes))
+    }
+}
+```
+
+### Using `fasthttp` client
+
+```go
+import (
+    "fmt"
+    "github.com/grokify/glip-go-webhook"
+)
+
+func sendMessage() {
+    // Can instantiate webhook client with full URL or GUID only
+    url := "https://hooks.glip.com/webhook/00001111-2222-3333-4444-555566667777"
+    client, err := glipwebhook.NewGlipWebhookClient(url)
+    if err != nil {
+        panic("BAD URL")
+    }
+
+    msg := glipwebhook.GlipWebhookMessage{
+        Body: "Test Message Body"}
+
+    res, resp, err := client.PostMessageFast(msg)
+    if err == nil {
+        fmt.Println(string(resp.Body()))
+    }
+    fasthttp.ReleaseRequest(req)
+    fasthttp.ReleaseResponse(resp)
 }
 ```

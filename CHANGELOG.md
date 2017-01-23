@@ -1,0 +1,8 @@
+- 2017-01-25
+  - Add `PostMessageFast` using `fasthttp` client request
+  - Bugfix for struct name
+- 2017-01-19
+  - Add response model structs
+  - Bugfix for struct name
+- 2017-01-15
+  - Initial commit
