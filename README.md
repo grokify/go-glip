@@ -54,7 +54,7 @@ import (
 func sendMessage() {
     // Can instantiate webhook client with full URL or GUID only
     url := "https://hooks.glip.com/webhook/00001111-2222-3333-4444-555566667777"
-    client, err := glipwebhook.NewGlipWebhookClient(url)
+    client, err := glipwebhook.NewGlipWebhookClientFast(url)
     if err != nil {
         panic("BAD URL")
     }
@@ -69,4 +69,14 @@ func sendMessage() {
     fasthttp.ReleaseRequest(req)
     fasthttp.ReleaseResponse(resp)
 }
+```
+
+You can reuse the client for different Webhook URLs or GUIDs as follows:
+
+```go
+// Webhook URL
+res, resp, err := client.PostWebhookFast(url, msg)
+
+// Webhook GUID
+res, resp, err := client.PostWebhookGUIDFast(guid, msg)
 ```
