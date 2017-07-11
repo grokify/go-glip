@@ -144,7 +144,7 @@ type GlipWebhookMessage struct {
 type GlipWebhookResponse struct {
 	Status  string           `json:"status,omitempty"`
 	Message string           `json:"message,omitempty"`
-	Error   GlipWebhookError `json:error,omitempty`
+	Error   GlipWebhookError `json:"error,omitempty"`
 }
 
 type GlipWebhookError struct {
