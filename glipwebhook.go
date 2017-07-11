@@ -15,10 +15,13 @@ import (
 )
 
 const (
-	GLIP_WEBHOOK_BASE_URL = "https://hooks.glip.com/webhook/"
-	CONTENT_TYPE_JSON     = "application/json"
-	CONTENT_TYPE_HEADER   = "Content-Type"
-	HTTP_METHOD_POST      = "POST"
+	GlipWebhookBaseURLProduction string = "https://hooks.glip.com/webhook/"
+	GlipWebhookBaseURLSandbox    string = "https://hooks-glip.devtest.ringcentral.com/webhook/"
+	HTTPMethodPost               string = "POST"
+)
+
+var (
+	GlipWebhookBaseURL string = "https://hooks.glip.com/webhook/"
 )
 
 type GlipWebhookClient struct {
@@ -36,6 +39,7 @@ func newGlipWebhookClientCore(urlOrGuid string) (GlipWebhookClient, error) {
 		}
 		client.WebhookUrl = url
 	}
+	//GlipWebhookBaseURL = GlipWebhookBaseURLSandbox
 	return client, nil
 }
 
@@ -64,7 +68,7 @@ func (client *GlipWebhookClient) BuildWebhookURL(urlOrGuid string) (string, erro
 	rx := regexp.MustCompile(`^[0-9A-Za-z-]+$`)
 	match := rx.FindString(urlOrGuid)
 	if len(match) > 0 {
-		return fmt.Sprintf("%v%v", GLIP_WEBHOOK_BASE_URL, urlOrGuid), nil
+		return fmt.Sprintf("%v%v", GlipWebhookBaseURL, urlOrGuid), nil
 	}
 	return urlOrGuid, nil
 }
@@ -88,17 +92,17 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 		return &http.Response{}, err
 	}
 
-	req, err := http.NewRequest(HTTP_METHOD_POST, url, bytes.NewBuffer(messageBytes))
+	req, err := http.NewRequest(HTTPMethodPost, url, bytes.NewBuffer(messageBytes))
 	if err != nil {
 		return &http.Response{}, err
 	}
 
-	req.Header.Set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
+	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
 	return client.HttpClient.Do(req)
 }
 
 func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhookMessage) (*http.Response, error) {
-	return client.PostWebhook(strings.Join([]string{GLIP_WEBHOOK_BASE_URL, guid}, ""), message)
+	return client.PostWebhook(strings.Join([]string{GlipWebhookBaseURL, guid}, ""), message)
 }
 
 // Request using fasthttp
@@ -118,16 +122,16 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 	}
 	req.SetBody(bytes)
 
-	req.Header.SetMethod(HTTP_METHOD_POST)
+	req.Header.SetMethod(HTTPMethodPost)
 	req.Header.SetRequestURI(url)
-	req.Header.Set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
+	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
 
 	err = client.FastClient.Do(req, resp)
 	return req, resp, err
 }
 
 func (client *GlipWebhookClient) PostWebhookGUIDFast(guid string, message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
-	return client.PostWebhookFast(strings.Join([]string{GLIP_WEBHOOK_BASE_URL, guid}, ""), message)
+	return client.PostWebhookFast(strings.Join([]string{GlipWebhookBaseURL, guid}, ""), message)
 }
 
 type GlipWebhookMessage struct {
