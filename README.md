@@ -4,6 +4,7 @@ Glip Webhook Client in Go
 [![Go Report Card][goreport-svg]][goreport-link]
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
+[![Chat][chat-svg]][chat-link]
 
 ## Installation
 
@@ -91,3 +92,5 @@ res, resp, err := client.PostWebhookGUIDFast(guid, msg)
  [docs-godoc-link]: https://godoc.org/github.com/grokify/glip-go-webhook
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-link]: https://github.com/grokify/glip-go-webhook/blob/master/LICENSE.md
+ [chat-svg]: https://img.shields.io/badge/chat-on glip-orange.svg
+ [chat-link]: https://glipped.herokuapp.com/
