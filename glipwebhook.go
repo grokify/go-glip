@@ -51,12 +51,12 @@ func NewGlipWebhookClientFast(urlOrGuid string) (GlipWebhookClient, error) {
 }
 
 func (client *GlipWebhookClient) buildWebhookURL(urlOrUid string) string {
-	rx := regexp.MustCompile(`^https:`)
+	rx := regexp.MustCompile(`^https?://`)
 	rs := rx.FindString(urlOrUid)
 	if len(rs) > 0 {
 		log.WithFields(log.Fields{
 			"lib": "glipwebhook.go",
-			"request_url_http_match": urlOrUid}).Debug("")
+			"request_url_http_match": urlOrUid}).Debug("Webhook URL has scheme.")
 		return urlOrUid
 	}
 	return strings.Join([]string{WebhookBaseURL, urlOrUid}, "")
@@ -134,19 +134,21 @@ type GlipWebhookMessage struct {
 }
 
 type Attachment struct {
-	Color      string  `json:"color,omitempty"`
-	Pretext    string  `json:"pretext,omitempty"`
-	AuthorName string  `json:"author_name,omitempty"`
-	AuthorLink string  `json:"author_link,omitempty"`
-	AuthorIcon string  `json:"author_icon,omitempty"`
-	Title      string  `json:"title,omitempty"`
-	TitleLink  string  `json:"title_link,omitempty"`
-	Fallback   string  `json:"fallback,omitempty"`
-	Fields     []Field `json:"fields,omitempty"`
-	Text       string  `json:"text,omitempty"`
-	TS         int64   `json:"ts,omitempty"`
-	Footer     string  `json:"footer,omitempty"`
-	FooterIcon string  `json:"footer_icon,omitempty"`
+	Color        string  `json:"color,omitempty"`
+	Pretext      string  `json:"pretext,omitempty"`
+	AuthorName   string  `json:"author_name,omitempty"`
+	AuthorLink   string  `json:"author_link,omitempty"`
+	AuthorIcon   string  `json:"author_icon,omitempty"`
+	Title        string  `json:"title,omitempty"`
+	TitleLink    string  `json:"title_link,omitempty"`
+	Fallback     string  `json:"fallback,omitempty"`
+	Fields       []Field `json:"fields,omitempty"`
+	Text         string  `json:"text,omitempty"`
+	ImageURL     string  `json:"image_url,omitempty"`
+	ThumbnailURL string  `json:"thumbnail_url,omitempty"`
+	TS           int64   `json:"ts,omitempty"`
+	Footer       string  `json:"footer,omitempty"`
+	FooterIcon   string  `json:"footer_icon,omitempty"`
 }
 
 type Field struct {

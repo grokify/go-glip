@@ -66,7 +66,7 @@ func sendMessage() {
     msg := glipwebhook.GlipWebhookMessage{
         Body: "Test Message Body"}
 
-    res, resp, err := client.PostMessageFast(msg)
+    req, resp, err := client.PostMessageFast(msg)
     if err == nil {
         fmt.Println(string(resp.Body()))
     }
