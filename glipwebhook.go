@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/grokify/gotilla/net/httputil"
+	"github.com/grokify/gotilla/net/httputilmore"
 	"github.com/valyala/fasthttp"
 )
 
@@ -40,7 +40,7 @@ func newGlipWebhookClientCore(urlOrGuid string) GlipWebhookClient {
 
 func NewGlipWebhookClient(urlOrGuid string) (GlipWebhookClient, error) {
 	client := newGlipWebhookClientCore(urlOrGuid)
-	client.HttpClient = httputil.NewHttpClient()
+	client.HttpClient = httputilmore.NewHttpClient()
 	return client, nil
 }
 
@@ -86,7 +86,7 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 		return &http.Response{}, err
 	}
 
-	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
 	return client.HttpClient.Do(req)
 }
 
@@ -115,7 +115,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 
 	req.Header.SetRequestURI(url)
 	req.Header.SetMethod(HTTPMethodPost)
-	req.Header.Set(httputil.ContentTypeHeader, httputil.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
 
 	err = client.FastClient.Do(req, resp)
 	return req, resp, err
@@ -126,11 +126,12 @@ func (client *GlipWebhookClient) PostWebhookGUIDFast(guidOrURL string, message G
 }
 
 type GlipWebhookMessage struct {
-	Icon        string       `json:"icon,omitempty"`
-	Activity    string       `json:"activity,omitempty"`
-	Title       string       `json:"title,omitempty"`
-	Body        string       `json:"body,omitempty"`
-	Attachments []Attachment `json:"attachments,omitempty"`
+	Icon           string       `json:"icon,omitempty"`
+	Activity       string       `json:"activity,omitempty"`
+	Title          string       `json:"title,omitempty"`
+	Body           string       `json:"body,omitempty"`
+	AttachmentType string       `json:"attachment_type,omitempty"`
+	Attachments    []Attachment `json:"attachments,omitempty"`
 }
 
 type Attachment struct {
@@ -146,9 +147,9 @@ type Attachment struct {
 	Text         string  `json:"text,omitempty"`
 	ImageURL     string  `json:"image_url,omitempty"`
 	ThumbnailURL string  `json:"thumbnail_url,omitempty"`
-	TS           int64   `json:"ts,omitempty"`
 	Footer       string  `json:"footer,omitempty"`
 	FooterIcon   string  `json:"footer_icon,omitempty"`
+	TS           int64   `json:"ts,omitempty"`
 }
 
 type Field struct {
