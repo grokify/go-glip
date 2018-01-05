@@ -22,60 +22,68 @@ func main() {
 		log.Fatal(err)
 	}
 
-	msg := glipwebhook.GlipWebhookMessage{
-		Icon:  "https://d30y9cdsu7xlg0.cloudfront.net/png/6597-200.png",
-		Title: "Jeff is having a Maple Bacon Coffee Porter",
-		Body:  "* Location: [The Funky Buddha Lounge](http://www.thefunkybuddha.com)",
-		Attachments: []glipwebhook.Attachment{
-			glipwebhook.Attachment{
-				Title:        "Maple Bacon Coffee Porter",
-				TitleLink:    "https://funkybuddhabrewery.com/our-beers/little-buddha-small-batch/maple-bacon-coffee-porter",
-				Color:        "#ff0000",
-				AuthorName:   "Funky Buddha Lounge",
-				AuthorLink:   "https://funkybuddhabrewery.com",
-				AuthorIcon:   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSymLVWmoonPAlBJWD68MczjvfLUavibXovYisb7vADlM8V7Z47DA",
-				Text:         "*The beer that started it all.* Evoking a complete diner-style breakfast in a glass, Maple Bacon Coffee Porter is a complex beer with a multitude of flavors at play. It pours an opaque ebony brew with a frothy tan head.",
-				ImageURL:     "https://funkybuddhabrewery.com/sites/default/files/our_beer/MBCP_2017_bottle-mock-22oz.png",
-				ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
-				Fields: []glipwebhook.Field{
-					glipwebhook.Field{
-						Title: "Style",
-						Value: "Porter",
-						Short: true},
-					glipwebhook.Field{
-						Title: "Beer Advocate Rating:",
-						Value: "[99](http://tinyurl.com/psf4uzq)",
-						Short: true},
+	msgs := []glipwebhook.GlipWebhookMessage{}
+
+	addFunkyBudha := true
+	addDemoPost := true
+	addSalesforce := true
+
+	if addFunkyBudha {
+		msg := glipwebhook.GlipWebhookMessage{
+			Icon:  "https://d30y9cdsu7xlg0.cloudfront.net/png/6597-200.png",
+			Title: "Jeff is having a Maple Bacon Coffee Porter",
+			Body:  "* Location: [The Funky Buddha Lounge](http://www.thefunkybuddha.com)",
+			Attachments: []glipwebhook.Attachment{
+				glipwebhook.Attachment{
+					Title:        "Maple Bacon Coffee Porter",
+					TitleLink:    "https://funkybuddhabrewery.com/our-beers/little-buddha-small-batch/maple-bacon-coffee-porter",
+					Color:        "#ff0000",
+					AuthorName:   "Funky Buddha Lounge",
+					AuthorLink:   "https://funkybuddhabrewery.com",
+					AuthorIcon:   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSymLVWmoonPAlBJWD68MczjvfLUavibXovYisb7vADlM8V7Z47DA",
+					Text:         "*The beer that started it all.* Evoking a complete diner-style breakfast in a glass, Maple Bacon Coffee Porter is a complex beer with a multitude of flavors at play. It pours an opaque ebony brew with a frothy tan head.",
+					ImageURL:     "https://funkybuddhabrewery.com/sites/default/files/our_beer/MBCP_2017_bottle-mock-22oz.png",
+					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
+					Fields: []glipwebhook.Field{
+						glipwebhook.Field{
+							Title: "Style",
+							Value: "Porter",
+							Short: true},
+						glipwebhook.Field{
+							Title: "Beer Advocate Rating:",
+							Value: "[99](http://tinyurl.com/psf4uzq)",
+							Short: true},
+					},
+				},
+				glipwebhook.Attachment{
+					Color:    "#00ff2a",
+					Text:     "Come down and grab a beer!",
+					ImageURL: "http://a.memegen.com/zkqt2e.gif",
 				},
 			},
-			glipwebhook.Attachment{
-				Color:    "#00ff2a",
-				Text:     "Come down and grab a beer!",
-				ImageURL: "http://a.memegen.com/zkqt2e.gif",
-			},
-		},
+		}
+		msgs = append(msgs, msg)
 	}
 
 	//					AuthorIcon:   "http://www.iconsdb.com/icons/preview/blue/square-ios-app-xxl.png",
 
-	if 1 == 1 {
-		msg = glipwebhook.GlipWebhookMessage{
-			Icon:  "http://www.iconsdb.com/icons/preview/orange/square-ios-app-xxl.png",
+	if addDemoPost {
+		msg := glipwebhook.GlipWebhookMessage{
+			Icon:  "https://i.imgur.com/9yILi61.png",
 			Title: "**Title of the post**",
 			Body:  "Body of the post",
 			Attachments: []glipwebhook.Attachment{
 				glipwebhook.Attachment{
-					Title:      "Attachment Title",
-					TitleLink:  "https://example.com/title_link",
-					Color:      "#00ff2a",
-					AuthorName: "Author Name",
-					AuthorLink: "https://example.com/author_link",
-					AuthorIcon: "http://www.iconsdb.com/icons/preview/blue/square-ios-app-xxl.png",
-					Text:       "Attachment text",
-					Pretext:    "Attachment pretext appears before the attachment block",
-					//ImageURL:   "http://a.memegen.com/zkqt2e.gif",
-					ImageURL: "https://media3.giphy.com/media/l4FssTixISsPStXRC/giphy.gif",
-					//ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
+					Title:        "Attachment Title",
+					TitleLink:    "https://example.com/title_link",
+					Color:        "#00ff2a",
+					AuthorName:   "Author Name",
+					AuthorLink:   "https://example.com/author_link",
+					AuthorIcon:   "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/000080_Navy_Blue_Square.svg/1200px-000080_Navy_Blue_Square.svg.png",
+					Text:         "Attachment text",
+					Pretext:      "Attachment pretext appears before the attachment block",
+					ImageURL:     "https://media3.giphy.com/media/l4FssTixISsPStXRC/giphy.gif",
+					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 					Fields: []glipwebhook.Field{
 						glipwebhook.Field{
 							Title: "Field 1",
@@ -88,10 +96,11 @@ func main() {
 						glipwebhook.Field{
 							Title: "Field 3",
 							Value: "A long, full-width field with *formatting* and [a link](https://example.com)",
-							Short: false},
+							Short: true},
 					},
+					//Footnote: &glipwebhook.Footnote{
 					Footer:     "Attachment footer and timestamp",
-					FooterIcon: "http://www.iconsdb.com/icons/preview/red/square-ios-app-xxl.png",
+					FooterIcon: "http://www.iconsdb.com/icons/preview/red/square-ios-app-xxl.png", //},
 					TS:         time.Now().Unix(),
 				},
 			},
@@ -102,11 +111,12 @@ func main() {
 			msg.Attachments[0].FooterIcon = "https://example.com/footer_icon.png"
 			msg.Attachments[0].AuthorIcon = "https://example.com/author_icon.png"
 		}
+		msgs = append(msgs, msg)
 	}
 
-	if 1 == 0 {
+	if addSalesforce {
 		//Salesforce
-		msg = glipwebhook.GlipWebhookMessage{
+		msg := glipwebhook.GlipWebhookMessage{
 			Icon:  "http://www.bridgethegap.com/wp-content/uploads/2017/02/salesforce-best-practices.png",
 			Title: "**Top Opportunities**",
 			Body:  "Full report: https://my.salesforce.com/00O80000007MOgS",
@@ -185,16 +195,18 @@ func main() {
 				},
 			},
 		}
+		msgs = append(msgs, msg)
 	}
 
-	fmtutil.PrintJSON(msg)
+	fmtutil.PrintJSON(msgs)
 
-	//panic("A")
+	for _, msg := range msgs {
 
-	req, resp, err := client.PostMessageFast(msg)
-	if err == nil {
-		fmt.Println(string(resp.Body()))
+		req, resp, err := client.PostMessageFast(msg)
+		if err == nil {
+			fmt.Println(string(resp.Body()))
+		}
+		fasthttp.ReleaseRequest(req)
+		fasthttp.ReleaseResponse(resp)
 	}
-	fasthttp.ReleaseRequest(req)
-	fasthttp.ReleaseResponse(resp)
 }

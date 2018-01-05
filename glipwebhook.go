@@ -152,10 +152,22 @@ type Attachment struct {
 	TS           int64   `json:"ts,omitempty"`
 }
 
+type Author struct {
+	Name    string `json:"name,omitempty"`
+	URI     string `json:"uri,omitempty"`
+	IconURI string `json:"iconUri,omitempty"`
+}
+
+type Footnote struct {
+	Text    string `json:"text,omitempty"`
+	IconURI string `json:"iconUri,omitempty"`
+}
+
 type Field struct {
 	Title string `json:"title,omitempty"`
 	Value string `json:"value,omitempty"`
 	Short bool   `json:"short,omitempty"`
+	Style string `json:"style,omitempty"`
 }
 
 type GlipWebhookResponse struct {
