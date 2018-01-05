@@ -38,7 +38,7 @@ func main() {
 		Title: "Jeff is having a Maple Bacon Coffee Porter",
 		Body:  "* Location: [The Funky Buddha Lounge](http://www.thefunkybuddha.com)",
 		Attachments: []glipwebhook.Attachment{
-			glipwebhook.Attachment{
+			{
 				Title:        "Maple Bacon Coffee Porter",
 				TitleLink:    "https://funkybuddhabrewery.com/our-beers/little-buddha-small-batch/maple-bacon-coffee-porter",
 				Color:        "#ff0000",
@@ -49,11 +49,11 @@ func main() {
 				ImageURL:     "https://funkybuddhabrewery.com/sites/default/files/our_beer/MBCP_2017_bottle-mock-22oz.png",
 				ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 				Fields: []glipwebhook.Field{
-					glipwebhook.Field{
+					{
 						Title: "Style",
 						Value: "Porter",
 						Short: true},
-					glipwebhook.Field{
+					{
 						Title: "Beer Advocate Rating:",
 						Value: "[99](http://tinyurl.com/psf4uzq)",
 						Short: true},

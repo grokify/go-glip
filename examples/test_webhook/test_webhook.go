@@ -6,7 +6,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/go-glip"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/valyala/fasthttp"
 )
@@ -34,7 +34,7 @@ func main() {
 			Title: "Jeff is having a Maple Bacon Coffee Porter",
 			Body:  "* Location: [The Funky Buddha Lounge](http://www.thefunkybuddha.com)",
 			Attachments: []glipwebhook.Attachment{
-				glipwebhook.Attachment{
+				{
 					Title:        "Maple Bacon Coffee Porter",
 					TitleLink:    "https://funkybuddhabrewery.com/our-beers/little-buddha-small-batch/maple-bacon-coffee-porter",
 					Color:        "#ff0000",
@@ -45,17 +45,17 @@ func main() {
 					ImageURL:     "https://funkybuddhabrewery.com/sites/default/files/our_beer/MBCP_2017_bottle-mock-22oz.png",
 					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 					Fields: []glipwebhook.Field{
-						glipwebhook.Field{
+						{
 							Title: "Style",
 							Value: "Porter",
 							Short: true},
-						glipwebhook.Field{
+						{
 							Title: "Beer Advocate Rating:",
 							Value: "[99](http://tinyurl.com/psf4uzq)",
 							Short: true},
 					},
 				},
-				glipwebhook.Attachment{
+				{
 					Color:    "#00ff2a",
 					Text:     "Come down and grab a beer!",
 					ImageURL: "http://a.memegen.com/zkqt2e.gif",
@@ -73,7 +73,7 @@ func main() {
 			Title: "**Title of the post**",
 			Body:  "Body of the post",
 			Attachments: []glipwebhook.Attachment{
-				glipwebhook.Attachment{
+				{
 					Title:        "Attachment Title",
 					TitleLink:    "https://example.com/title_link",
 					Color:        "#00ff2a",
@@ -85,15 +85,15 @@ func main() {
 					ImageURL:     "https://media3.giphy.com/media/l4FssTixISsPStXRC/giphy.gif",
 					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 					Fields: []glipwebhook.Field{
-						glipwebhook.Field{
+						{
 							Title: "Field 1",
 							Value: "A short field",
 							Short: true},
-						glipwebhook.Field{
+						{
 							Title: "Field 2",
 							Value: "[A linked short field](https://example.com)",
 							Short: true},
-						glipwebhook.Field{
+						{
 							Title: "Field 3",
 							Value: "A long, full-width field with *formatting* and [a link](https://example.com)",
 							Short: true},
@@ -121,74 +121,74 @@ func main() {
 			Title: "**Top Opportunities**",
 			Body:  "Full report: https://my.salesforce.com/00O80000007MOgS",
 			Attachments: []glipwebhook.Attachment{
-				glipwebhook.Attachment{
+				{
 					Color:        "#00ff2a",
 					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 					Fields: []glipwebhook.Field{
-						glipwebhook.Field{
+						{
 							Title: "Opportunity", Short: true,
 							Value: "[Eureka Oil and Gas (0038000001MgG2z)](https://example.com)"},
-						glipwebhook.Field{
+						{
 							Title: "Owner", Short: true,
 							Value: "Alice Collins"},
-						glipwebhook.Field{
+						{
 							Title: "Stage", Short: true,
 							Value: "Proposal/Quote"},
-						glipwebhook.Field{
+						{
 							Title: "Close Date", Short: true,
 							Value: "2017-09-20"},
-						glipwebhook.Field{
+						{
 							Title: "Amount", Short: true,
 							Value: "$750,000"},
-						glipwebhook.Field{
+						{
 							Title: "Probability", Short: true,
 							Value: "85%"},
 					},
 				},
-				glipwebhook.Attachment{
+				{
 					Color:        "#dfdd13",
 					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 					Fields: []glipwebhook.Field{
-						glipwebhook.Field{
+						{
 							Title: "Opportunity", Short: true,
 							Value: "[Pacfic Restaurants (0038000004WhM4a)](https://example.com)"},
-						glipwebhook.Field{
+						{
 							Title: "Owner", Short: true,
 							Value: "Justin Lyons"},
-						glipwebhook.Field{
+						{
 							Title: "Stage", Short: true,
 							Value: "Discovery"},
-						glipwebhook.Field{
+						{
 							Title: "Close Date", Short: true,
 							Value: "2017-09-20"},
-						glipwebhook.Field{
+						{
 							Title: "Amount", Short: true,
 							Value: "$500,000"},
-						glipwebhook.Field{
+						{
 							Title: "Probability", Short: true,
 							Value: "70%"},
 					},
 				},
-				glipwebhook.Attachment{
+				{
 					Color:        "#ff0000",
 					ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
 					Fields: []glipwebhook.Field{
-						glipwebhook.Field{
+						{
 							Title: "Opportunity", Short: true,
 							Value: "[Electric Company of America (0038000004OrS7y)](https://example.com)"},
-						glipwebhook.Field{
+						{
 							Title: "Owner", Short: true,
 							Value: "Matthew West"},
-						glipwebhook.Field{
+						{
 							Title: "Stage", Short: true,
 							Value: "Proposal/Quote"},
-						glipwebhook.Field{
+						{
 							Title: "Close Date", Short: true,
 							Value: "2017-12-20"},
-						glipwebhook.Field{
+						{
 							Title: "Amount", Short: true,
 							Value: "$150,000"},
-						glipwebhook.Field{
+						{
 							Title: "Probability", Short: true,
 							Value: "40%"},
 					},
