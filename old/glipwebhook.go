@@ -74,14 +74,14 @@ func (client *GlipWebhookClient) PostJSON(url string, bodyBytes []byte) (*http.R
 type GlipWebhookMessage struct {
 	Icon     string `json:"icon,omitempty"`
 	Activity string `json:"activity,omitempty"`
-	Title    string `json:"title",omitempty`
+	Title    string `json:"title,omitempty"`
 	Body     string `json:"body,omitempty"`
 }
 
 type GlipWebhookResponse struct {
 	Status  string           `json:"status,omitempty"`
 	Message string           `json:"message,omitempty"`
-	Error   GlipWebhookError `json:error,omitempty`
+	Error   GlipWebhookError `json:"error,omitempty"`
 }
 
 type GlipWebhookError struct {
