@@ -9,7 +9,20 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+func loadEnv() error {
+	envPaths := []string{}
+	if len(os.Getenv("ENV_PATH")) > 0 {
+		envPaths = append(envPaths, os.Getenv("ENV_PATH"))
+	}
+	return godotenv.Load(envPaths...)
+}
+
 func main() {
+	err := loadEnv()
+	if err != nil {
+		panic(err)
+	}
+
 	var hookUrl string
 	flag.StringVar(&hookUrl, "hookurl", "https://hooks.glip.com/webhook/1111-deadbeef-8888", "Config file path")
 	flag.Parse()
