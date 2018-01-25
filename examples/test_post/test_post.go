@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/grokify/glip-go-webhook"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 

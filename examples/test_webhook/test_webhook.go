@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/grokify/go-glip"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 
