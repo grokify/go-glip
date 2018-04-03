@@ -15,22 +15,27 @@ import (
 
 	"github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/fmt/fmtutil"
-	"github.com/grokify/gotilla/net/httputil"
-	"github.com/grokify/oauth2-util-go/services/ringcentral"
+	httputil "github.com/grokify/gotilla/net/httputilmore"
+	"github.com/grokify/oauth2more/ringcentral"
 	"golang.org/x/oauth2"
 )
+
+var RingCentralServerURL = "https://platform.ringcentral.com"
 
 // main finds Glip groups matching the following command:
 // find_team -group "My Group Name"
 func main() {
+	err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
+	if err != nil {
+		panic(err)
+	}
+
 	var wantGroupName, filepath string
 	flag.StringVar(&wantGroupName, "group", "All Employees", "Glip Group Name")
 	flag.StringVar(&filepath, "file", "/path/to/myfile.png", "Filepath")
 	flag.Parse()
 
-	config.LoadDotEnv()
-
-	err := ringcentral.SetHostnameForURL(os.Getenv("RC_SERVER_URL"))
+	err = ringcentral.SetHostnameForURL(os.Getenv("RC_SERVER_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,7 +53,7 @@ func main() {
 	for i, group := range groups {
 		log.Printf("%d) %v %v\n", i, group.ID, group.Name)
 		if 1 == 1 {
-			resp, err := postTestMessageWithAttachment(client, group.ID, filepath)
+			resp, err := postFile(client, group.ID, filepath)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -73,7 +78,7 @@ func postFile(client *http.Client, groupId string, filepath string) (*http.Respo
 	filepathParts := strings.Split(filepath, "/")
 	filename := filepathParts[len(filepathParts)-1]
 
-	uploadURL := ringcentral.BuildURL("/glip/posts", true, query)
+	uploadURL := ringcentral.BuildURL(RingCentralServerURL, "/glip/posts", true, url.Values{})
 
 	req, err := http.NewRequest("POST", uploadURL, file)
 	if err != nil {
@@ -101,7 +106,7 @@ func getGroupsSet(client *http.Client, groupType string) GroupsSet {
 	}
 
 	for {
-		groupsURL := ringcentral.BuildURL("/glip/groups", true, query)
+		groupsURL := ringcentral.BuildURL(RingCentralServerURL, "/glip/groups", true, query)
 		resp, err := client.Get(groupsURL)
 		if err != nil {
 			log.Fatal(err)

@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/grokify/gotilla/net/httputil"
+	httputil "github.com/grokify/gotilla/net/httputilmore"
 )
 
 const (

@@ -13,24 +13,17 @@ import (
 	"strings"
 	"time"
 
+	"github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/grokify/gotilla/net/httputilmore"
 	ro "github.com/grokify/oauth2more/ringcentral"
-	"github.com/joho/godotenv"
 )
-
-func loadEnv() error {
-	envPaths := []string{}
-	if len(os.Getenv("ENV_PATH")) > 0 {
-		envPaths = append(envPaths, os.Getenv("ENV_PATH"))
-	}
-	return godotenv.Load(envPaths...)
-}
 
 // main finds Glip groups matching the following command:
 // find_team -group "My Group Name"
 func main() {
-	if err := loadEnv(); err != nil {
+	err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
+	if err != nil {
 		panic(err)
 	}
 
@@ -47,7 +40,7 @@ func main() {
 			ServerURL:    os.Getenv("RINGCENTRAL_SERVER_URL"),
 			ClientID:     os.Getenv("RINGCENTRAL_CLIENT_ID"),
 			ClientSecret: os.Getenv("RINGCENTRAL_CLIENT_SECRET")},
-		ro.UserCredentials{
+		ro.PasswordCredentials{
 			Username:  os.Getenv("RINGCENTRAL_USERNAME"),
 			Extension: os.Getenv("RINGCENTRAL_EXTENSION"),
 			Password:  os.Getenv("RINGCENTRAL_PASSWORD")})

@@ -86,7 +86,7 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 		return &http.Response{}, err
 	}
 
-	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.HeaderContentType, httputilmore.HeaderContentTypeValueJSONUTF8)
 	return client.HttpClient.Do(req)
 }
 
@@ -115,7 +115,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 
 	req.Header.SetRequestURI(url)
 	req.Header.SetMethod(HTTPMethodPost)
-	req.Header.Set(httputilmore.ContentTypeHeader, httputilmore.ContentTypeValueJSONUTF8)
+	req.Header.Set(httputilmore.HeaderContentType, httputilmore.HeaderContentTypeValueJSONUTF8)
 
 	err = client.FastClient.Do(req, resp)
 	return req, resp, err

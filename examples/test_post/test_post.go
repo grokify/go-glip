@@ -3,22 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/gotilla/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 
-func loadEnv() error {
-	envPaths := []string{}
-	if len(os.Getenv("ENV_PATH")) > 0 {
-		envPaths = append(envPaths, os.Getenv("ENV_PATH"))
-	}
-	return godotenv.Load(envPaths...)
-}
-
 func main() {
-	err := loadEnv()
+	err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
 	if err != nil {
 		panic(err)
 	}
