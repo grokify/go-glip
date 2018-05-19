@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/grokify/glip-go-webhook"
+	"github.com/grokify/go-glip"
 	"github.com/grokify/gotilla/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
