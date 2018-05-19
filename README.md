@@ -1,6 +1,7 @@
 Glip Webhook Client in Go
 =========================
 
+[![Build Status][build-status-svg]][build-status-link]
 [![Go Report Card][goreport-svg]][goreport-link]
 [![Docs][docs-godoc-svg]][docs-godoc-link]
 [![License][license-svg]][license-link]
@@ -86,6 +87,8 @@ res, resp, err := client.PostWebhookFast(url, msg)
 res, resp, err := client.PostWebhookGUIDFast(guid, msg)
 ```
 
+ [build-status-svg]: https://api.travis-ci.org/grokify/go-glip.svg?branch=master
+ [build-status-link]: https://travis-ci.org/grokify/go-glip
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-glip
  [goreport-link]: https://goreportcard.com/report/github.com/grokify/go-glip
  [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
