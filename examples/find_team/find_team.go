@@ -1,19 +1,27 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"time"
 
+	ru "github.com/grokify/go-ringcentral/clientutil"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	httputil "github.com/grokify/gotilla/net/httputilmore"
 	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
 )
+
+type Options struct {
+	Group     string `short:"g" long:"group" description:"Group Name" required:"true"`
+	LoadUsers []bool `short:"u" long:"users" description:"List Users"`
+}
 
 func loadEnv() error {
 	envPaths := []string{}
@@ -29,10 +37,17 @@ func main() {
 	if err := loadEnv(); err != nil {
 		panic(err)
 	}
+	/*
+		var wantGroupName string
+		flag.StringVar(&wantGroupName, "group", "All Employees", "Glip Group Name")
+		flag.Parse()
+	*/
+	opts := Options{}
 
-	var wantGroupName string
-	flag.StringVar(&wantGroupName, "group", "All Employees", "Glip Group Name")
-	flag.Parse()
+	_, err := flags.Parse(&opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	httpClient, err := ro.NewClientPassword(
 		ro.ApplicationCredentials{
@@ -47,13 +62,36 @@ func main() {
 		panic(err)
 	}
 
+	apiClient, err := ru.NewApiClientHttpClientBaseURL(
+		httpClient, os.Getenv("RINGCENTRAL_SERVER_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	set := getGroupsSet(httpClient, "Team")
 
 	log.Printf("Searching %v Teams\n", len(set.GroupsMap))
 
-	groups := set.FindGroupsByName(wantGroupName)
+	groups := set.FindGroupsByName(opts.Group)
 
 	fmtutil.PrintJSON(groups)
+
+	if len(opts.LoadUsers) > 0 {
+		for _, group := range groups {
+			memberCount := len(group.Members)
+			for i, memberId := range group.Members {
+				n := i + 1
+				fmt.Printf("[%v/%v] %v", n, memberCount, memberId)
+				info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberId)
+				if err != nil {
+					log.Fatal(err)
+				} else if resp.StatusCode >= 300 {
+					log.Fatal(fmt.Sprintf("API RESP %v", resp.StatusCode))
+				}
+				fmtutil.PrintJSON(info)
+			}
+		}
+	}
 
 	log.Println("DONE")
 }
