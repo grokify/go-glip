@@ -135,6 +135,7 @@ type GlipWebhookMessage struct {
 }
 
 type Attachment struct {
+	Type         string  `json:"card,omitempty"`
 	Color        string  `json:"color,omitempty"`
 	Pretext      string  `json:"pretext,omitempty"`
 	AuthorName   string  `json:"author_name,omitempty"`
