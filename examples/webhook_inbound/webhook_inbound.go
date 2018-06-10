@@ -1,13 +1,13 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"time"
 
 	"github.com/grokify/go-glip"
 	"github.com/grokify/gotilla/fmt/fmtutil"
+	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
@@ -23,6 +23,11 @@ func loadEnv() error {
 		envPaths = append(envPaths, os.Getenv("ENV_PATH"))
 	}
 	return godotenv.Load(envPaths...)
+}
+
+type cliOptions struct {
+	WebhookUrlOrGuid string `short:"u" long:"url" description:"URL or GUID for Webhook"`
+	Type             string `short:"t" long:"type" description:"Type [simple,card,salesforce]"`
 }
 
 func getPostSimple() glipwebhook.GlipWebhookMessage {
@@ -191,35 +196,36 @@ func getPostSalesforce() glipwebhook.GlipWebhookMessage {
 }
 
 func main() {
-	var hookUrl string
-	flag.StringVar(&hookUrl, "hookurl", "", "Config file path")
-	flag.Parse()
-
-	if len(hookUrl) == 0 {
-		if err := loadEnv(); err != nil {
-			panic(err)
-		}
-		hookUrl = os.Getenv("GLIP_WEBHOOK_URL")
+	opts := cliOptions{}
+	_, err := flags.Parse(&opts)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(hookUrl)
+	if len(opts.WebhookUrlOrGuid) == 0 {
+		if err := loadEnv(); err != nil {
+			log.Fatal(err)
+		}
+		opts.WebhookUrlOrGuid = os.Getenv("GLIP_WEBHOOK_URL")
+	}
+	if len(opts.WebhookUrlOrGuid) == 0 {
+		log.Fatal("E_NO_WEBHOOK_URL_OR_GUID")
+	}
+
+	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookUrlOrGuid)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	msgs := []glipwebhook.GlipWebhookMessage{}
 
-	addPostSimple := true
-	addPostAttachment := true
-	addPostSalesforce := true
-
-	if addPostSimple {
+	if opts.Type == "simple" {
 		msgs = append(msgs, getPostSimple())
 	}
-	if addPostAttachment {
+	if opts.Type == "card" {
 		msgs = append(msgs, getPostAttachment())
 	}
-	if addPostSalesforce {
+	if opts.Type == "salesforce" {
 		msgs = append(msgs, getPostSalesforce())
 	}
 
