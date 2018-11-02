@@ -17,11 +17,9 @@ import (
 	httputil "github.com/grokify/gotilla/net/httputilmore"
 	"github.com/pkg/errors"
 
-	//rc "github.com/grokify/go-ringcentral/client"
 	"github.com/grokify/go-glip/examples"
 	ru "github.com/grokify/go-ringcentral/clientutil"
 	"github.com/grokify/go-ringcentral/clientutil/glipgroups"
-	om "github.com/grokify/oauth2more"
 	ro "github.com/grokify/oauth2more/ringcentral"
 )
 
@@ -47,7 +45,7 @@ func main() {
 		log.Fatal(errors.Wrap(err, "SetHostnameForURL"))
 	}
 
-	httpClient, err := getHttpClientEnv("")
+	httpClient, err := ro.NewHttpClientEnvFlexStatic("")
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "getHttpClientEnv"))
 	}
@@ -104,35 +102,6 @@ func main() {
 	}
 
 	log.Println("DONE")
-}
-
-func getHttpClientEnv(envPrefix string) (*http.Client, error) {
-	envPrefix = strings.TrimSpace(envPrefix)
-	if len(envPrefix) == 0 {
-		envPrefix = "RINGCENTRAL_"
-	}
-
-	envToken := strings.TrimSpace(envPrefix + "TOKEN")
-	token := os.Getenv(envToken)
-	if len(token) > 0 {
-		return om.NewClientBearerTokenSimple(token), nil
-	}
-
-	envPassword := strings.TrimSpace(envPrefix + "PASSWORD")
-	password := os.Getenv(envPassword)
-	if len(password) > 0 {
-		return ro.NewClientPassword(
-			ro.ApplicationCredentials{
-				ClientID:     os.Getenv(envPrefix + "CLIENT_ID"),
-				ClientSecret: os.Getenv(envPrefix + "CLIENT_SECRET"),
-				ServerURL:    os.Getenv(envPrefix + "SERVER_URL")},
-			ro.PasswordCredentials{
-				Username:  os.Getenv(envPrefix + "USERNAME"),
-				Extension: os.Getenv(envPrefix + "EXTENSION"),
-				Password:  os.Getenv(envPrefix + "PASSWORD")})
-	}
-
-	return nil, fmt.Errorf("Cannot load client from ENV for prefix [%v]", envPassword)
 }
 
 func postFile(client *http.Client, groupId string, filepath string) (*http.Response, error) {
