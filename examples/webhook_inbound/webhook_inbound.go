@@ -27,7 +27,7 @@ func loadEnv() error {
 
 type cliOptions struct {
 	WebhookUrlOrGuid string `short:"u" long:"url" description:"URL or GUID for Webhook"`
-	Type             string `short:"t" long:"type" description:"Type [simple,card,salesforce]"`
+	Type             string `short:"t" long:"type" description:"Type [simple,card,salesforce,alert]"`
 }
 
 func getPostSimple() glipwebhook.GlipWebhookMessage {
@@ -108,6 +108,46 @@ func getPostAttachment() glipwebhook.GlipWebhookMessage {
 		msg.Attachments[0].ImageURL = "https://example.com/congrats.gif"
 		msg.Attachments[0].FooterIcon = "https://example.com/footer_icon.png"
 		msg.Attachments[0].AuthorIcon = "https://example.com/author_icon.png"
+	}
+	return msg
+}
+
+func getPostAlert() glipwebhook.GlipWebhookMessage {
+	text := ":warning: 4 devices in **San Diego** have gone **Offline** :warning:"
+	msg := glipwebhook.GlipWebhookMessage{
+		Icon: "https://i.imgur.com/9yILi61.png",
+		Body: text,
+		Attachments: []glipwebhook.Attachment{
+			{
+				//Text: ":warning: 4 devices in **San Diego have gone **Offline** :warning:",
+				Fields: []glipwebhook.Field{
+					{
+						Title: "Alert Name",
+						Value: "San Diego Office Devices",
+						Short: false},
+					{
+						Title: "Target",
+						Value: "San Diego",
+						Short: true},
+					{
+						Title: "Alert Trigger",
+						Value: "# of Devices went offline",
+						Short: true},
+					{
+						Title: "Condition",
+						Value: "More than 3",
+						Short: true},
+					{
+						Title: "Triggered Value",
+						Value: "4 devices",
+						Short: true},
+					{
+						Title: "Report Link",
+						Value: "https://www.analytics.ringcentral.com/devices-offline",
+						Short: false},
+				},
+			},
+		},
 	}
 	return msg
 }
@@ -219,14 +259,15 @@ func main() {
 
 	msgs := []glipwebhook.GlipWebhookMessage{}
 
-	if opts.Type == "simple" {
+	switch opts.Type {
+	case "simple":
 		msgs = append(msgs, getPostSimple())
-	}
-	if opts.Type == "card" {
-		msgs = append(msgs, getPostAttachment())
-	}
-	if opts.Type == "salesforce" {
+	case "salesforce":
 		msgs = append(msgs, getPostSalesforce())
+	case "alert":
+		msgs = append(msgs, getPostAlert())
+	default:
+		msgs = append(msgs, getPostAttachment())
 	}
 
 	fmtutil.PrintJSON(msgs)

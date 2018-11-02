@@ -124,7 +124,7 @@ func createWebhook(webhookURL string) error {
 			"/restapi/v1.0/glip/posts",
 			"/restapi/v1.0/subscription/~?threshold=60&interval=15",
 		},
-		DeliveryMode: &rc.NotificationDeliveryModeRequest{
+		DeliveryMode: rc.NotificationDeliveryModeRequest{
 			TransportType: "WebHook",
 			Address:       webhookURL,
 		},

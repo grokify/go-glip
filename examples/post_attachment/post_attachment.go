@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -11,13 +11,19 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	httputil "github.com/grokify/gotilla/net/httputilmore"
 	"github.com/grokify/oauth2more/ringcentral"
-	"golang.org/x/oauth2"
+	"github.com/pkg/errors"
+
+	//rc "github.com/grokify/go-ringcentral/client"
+	"github.com/grokify/go-glip/examples"
+	ru "github.com/grokify/go-ringcentral/clientutil"
+	"github.com/grokify/go-ringcentral/clientutil/glipgroups"
+	om "github.com/grokify/oauth2more"
+	ro "github.com/grokify/oauth2more/ringcentral"
 )
 
 var RingCentralServerURL = "https://platform.ringcentral.com"
@@ -35,38 +41,99 @@ func main() {
 	flag.StringVar(&filepath, "file", "/path/to/myfile.png", "Filepath")
 	flag.Parse()
 
-	err = ringcentral.SetHostnameForURL(os.Getenv("RC_SERVER_URL"))
+	serverURL := os.Getenv("RINGCENTRAL_SERVER_URL")
+
+	err = ro.SetHostnameForURL(serverURL)
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "SetHostnameForURL"))
+	}
+
+	httpClient, err := getHttpClientEnv("")
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "getHttpClientEnv"))
+	}
+
+	apiClient, err := ru.NewApiClientHttpClientBaseURL(httpClient, serverURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	client := getRingCentralClient()
-
-	set := getGroupsSet(client, "Team")
+	set, err := glipgroups.NewGroupsSetApiRequest(httpClient, serverURL, "Team")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Printf("Searching %v Teams\n", len(set.GroupsMap))
 
-	groups := set.FindGroupsByName(wantGroupName)
+	group, err := set.FindGroupByName(wantGroupName)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Printf("Found Team [%v]\n", wantGroupName)
+	}
 
-	fmtutil.PrintJSON(groups)
-
-	for i, group := range groups {
-		log.Printf("%d) %v %v\n", i, group.ID, group.Name)
-		if 1 == 1 {
-			resp, err := postFile(client, group.ID, filepath)
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("Status %v\n", resp.StatusCode)
-			bytes, err := httputil.ResponseBody(resp)
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("%v\n", string(bytes))
+	if 1 == 1 {
+		info, resp, err := apiClient.GlipApi.CreatePost(
+			context.Background(), group.ID, examples.GetExamplePostAlertWarning())
+		if err != nil {
+			log.Fatal(err)
+		} else if resp.StatusCode >= 300 {
+			log.Fatal(fmt.Sprintf("Status [%v]", resp.StatusCode))
 		}
+		fmtutil.PrintJSON(info)
+		info, resp, err = apiClient.GlipApi.CreatePost(
+			context.Background(), group.ID, examples.GetExamplePostAlertSOS())
+		if err != nil {
+			log.Fatal(err)
+		} else if resp.StatusCode >= 300 {
+			log.Fatal(fmt.Sprintf("Status [%v]", resp.StatusCode))
+		}
+		fmtutil.PrintJSON(info)
+	}
+
+	if 1 == 0 {
+		resp, err := postFile(httpClient, group.ID, filepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Status %v\n", resp.StatusCode)
+		bytes, err := httputil.ResponseBody(resp)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("%v\n", string(bytes))
 	}
 
 	log.Println("DONE")
+}
+
+func getHttpClientEnv(envPrefix string) (*http.Client, error) {
+	envPrefix = strings.TrimSpace(envPrefix)
+	if len(envPrefix) == 0 {
+		envPrefix = "RINGCENTRAL_"
+	}
+
+	envToken := strings.TrimSpace(envPrefix + "TOKEN")
+	token := os.Getenv(envToken)
+	if len(token) > 0 {
+		return om.NewClientBearerTokenSimple(token), nil
+	}
+
+	envPassword := strings.TrimSpace(envPrefix + "PASSWORD")
+	password := os.Getenv(envPassword)
+	if len(password) > 0 {
+		return ro.NewClientPassword(
+			ro.ApplicationCredentials{
+				ClientID:     os.Getenv(envPrefix + "CLIENT_ID"),
+				ClientSecret: os.Getenv(envPrefix + "CLIENT_SECRET"),
+				ServerURL:    os.Getenv(envPrefix + "SERVER_URL")},
+			ro.PasswordCredentials{
+				Username:  os.Getenv(envPrefix + "USERNAME"),
+				Extension: os.Getenv(envPrefix + "EXTENSION"),
+				Password:  os.Getenv(envPrefix + "PASSWORD")})
+	}
+
+	return nil, fmt.Errorf("Cannot load client from ENV for prefix [%v]", envPassword)
 }
 
 func postFile(client *http.Client, groupId string, filepath string) (*http.Response, error) {
@@ -93,103 +160,4 @@ func postFile(client *http.Client, groupId string, filepath string) (*http.Respo
 	req.Header.Add("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
 
 	return client.Do(req)
-}
-
-func getGroupsSet(client *http.Client, groupType string) GroupsSet {
-	set := GroupsSet{GroupsMap: map[string]Group{}}
-
-	query := url.Values{}
-	query.Add("recordCount", "250")
-
-	if len(groupType) > 0 {
-		query.Add("type", groupType)
-	}
-
-	for {
-		groupsURL := ringcentral.BuildURL(RingCentralServerURL, "/glip/groups", true, query)
-		resp, err := client.Get(groupsURL)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		groupsResp, err := GetGroupsResponseFromHTTPResponse(resp)
-		if err != nil {
-			log.Fatal(err)
-		}
-		set.AddGroups(groupsResp.Records)
-
-		if len(groupsResp.Navigation.PrevPageToken) > 0 {
-			query.Add("pageToken", groupsResp.Navigation.PrevPageToken)
-		} else {
-			break
-		}
-	}
-	return set
-}
-
-func getRingCentralClient() *http.Client {
-	o2Config := &oauth2.Config{
-		ClientID:     os.Getenv("RC_APP_KEY"),
-		ClientSecret: os.Getenv("RC_APP_SECRET"),
-		Endpoint:     ringcentral.NewEndpoint(ringcentral.Hostname)}
-
-	tok, err := o2Config.PasswordCredentialsToken(
-		oauth2.NoContext,
-		os.Getenv("RC_USER_USERNAME"),
-		os.Getenv("RC_USER_PASSWORD"))
-
-	log.Println(tok.AccessToken)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return o2Config.Client(oauth2.NoContext, tok)
-}
-
-type GroupsSet struct {
-	GroupsMap map[string]Group
-}
-
-func (set *GroupsSet) AddGroups(groups []Group) {
-	for _, grp := range groups {
-		set.GroupsMap[grp.ID] = grp
-	}
-}
-
-func (set *GroupsSet) FindGroupsByName(groupName string) []Group {
-	groups := []Group{}
-	for _, group := range set.GroupsMap {
-		if groupName == group.Name {
-			groups = append(groups, group)
-		}
-	}
-	return groups
-}
-
-type Group struct {
-	ID               string    `json:"id,omitempty"`
-	Name             string    `json:"name,omitempty"`
-	Description      string    `json:"description,omitempty"`
-	CreationTime     time.Time `json:"creationTime,omitempty"`
-	LastModifiedTime time.Time `json:"lastModifiedTime,omitempty"`
-	Members          []string  `json:"members,omitempty"`
-}
-
-type GetGroupsResponse struct {
-	Records    []Group    `json:"records,omitempty"`
-	Navigation Navigation `json:"navigation,omitempty"`
-}
-
-func GetGroupsResponseFromHTTPResponse(resp *http.Response) (GetGroupsResponse, error) {
-	bytes, err := httputil.ResponseBody(resp)
-	if err != nil {
-		return GetGroupsResponse{}, err
-	}
-	var apiResp GetGroupsResponse
-	err = json.Unmarshal(bytes, &apiResp)
-	return apiResp, err
-}
-
-type Navigation struct {
-	PrevPageToken string `json:"prevPageToken,omitempty"`
-	NextPageToken string `json:"nextPageToken,omitempty"`
 }
