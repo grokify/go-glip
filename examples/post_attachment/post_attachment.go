@@ -15,7 +15,6 @@ import (
 	"github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	httputil "github.com/grokify/gotilla/net/httputilmore"
-	"github.com/grokify/oauth2more/ringcentral"
 	"github.com/pkg/errors"
 
 	//rc "github.com/grokify/go-ringcentral/client"
@@ -145,7 +144,7 @@ func postFile(client *http.Client, groupId string, filepath string) (*http.Respo
 	filepathParts := strings.Split(filepath, "/")
 	filename := filepathParts[len(filepathParts)-1]
 
-	uploadURL := ringcentral.BuildURL(RingCentralServerURL, "/glip/posts", true, url.Values{})
+	uploadURL := ro.BuildURL(RingCentralServerURL, "/glip/posts", true, url.Values{})
 
 	req, err := http.NewRequest("POST", uploadURL, file)
 	if err != nil {
