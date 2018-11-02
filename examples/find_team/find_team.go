@@ -2,20 +2,21 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"net/url"
 	"os"
-	"time"
+
+	"regexp"
 
 	ru "github.com/grokify/go-ringcentral/clientutil"
+	"github.com/grokify/gotilla/config"
 	"github.com/grokify/gotilla/fmt/fmtutil"
-	httputil "github.com/grokify/gotilla/net/httputilmore"
+	"github.com/grokify/gotilla/os/osutil"
 	ro "github.com/grokify/oauth2more/ringcentral"
 	"github.com/jessevdk/go-flags"
-	"github.com/joho/godotenv"
+
+	"github.com/grokify/go-ringcentral/clientutil/glipgroups"
+	"github.com/grokify/go-ringcentral/clientutil/mergedusers"
 )
 
 type Options struct {
@@ -23,20 +24,13 @@ type Options struct {
 	LoadUsers []bool `short:"u" long:"users" description:"List Users"`
 }
 
-func loadEnv() error {
-	envPaths := []string{}
-	if len(os.Getenv("ENV_PATH")) > 0 {
-		envPaths = append(envPaths, os.Getenv("ENV_PATH"))
-	}
-	return godotenv.Load(envPaths...)
-}
-
 // main finds Glip groups matching the following command:
 // find_team -group "My Group Name"
 func main() {
-	if err := loadEnv(); err != nil {
-		panic(err)
+	if err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env"); err != nil {
+		log.Fatal(err)
 	}
+
 	/*
 		var wantGroupName string
 		flag.StringVar(&wantGroupName, "group", "All Employees", "Glip Group Name")
@@ -47,6 +41,11 @@ func main() {
 	_, err := flags.Parse(&opts)
 	if err != nil {
 		log.Fatal(err)
+	}
+	fmt.Printf("USER [%v]\n", os.Getenv("RINGCENTRAL_USERNAME"))
+
+	if 1 == 0 {
+		fmtutil.PrintJSON(osutil.EnvFiltered(regexp.MustCompile(`RINGCENTRAL`)))
 	}
 
 	httpClient, err := ro.NewClientPassword(
@@ -59,7 +58,7 @@ func main() {
 			Extension: os.Getenv("RINGCENTRAL_EXTENSION"),
 			Password:  os.Getenv("RINGCENTRAL_PASSWORD")})
 	if err != nil {
-		panic(err)
+		log.Fatal(fmt.Printf("AUTH: %v\n", err))
 	}
 
 	apiClient, err := ru.NewApiClientHttpClientBaseURL(
@@ -68,8 +67,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	set := getGroupsSet(httpClient, "Team")
-
+	set, err := glipgroups.NewGroupsSetApiRequest(httpClient, os.Getenv("RINGCENTRAL_SERVER_URL"), "Team")
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.Printf("Searching %v Teams\n", len(set.GroupsMap))
 
 	groups := set.FindGroupsByName(opts.Group)
@@ -84,95 +85,43 @@ func main() {
 				fmt.Printf("[%v/%v] %v", n, memberCount, memberId)
 				info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberId)
 				if err != nil {
-					log.Fatal(err)
+					log.Fatal(fmt.Sprintf("API ERR: %v\n", err))
 				} else if resp.StatusCode >= 300 {
-					log.Fatal(fmt.Sprintf("API RESP %v", resp.StatusCode))
+					log.Fatal(fmt.Sprintf("API RESP %v\n", resp.StatusCode))
 				}
 				fmtutil.PrintJSON(info)
 			}
 		}
 	}
 
-	log.Println("DONE")
-}
-
-func getGroupsSet(client *http.Client, groupType string) GroupsSet {
-	set := GroupsSet{GroupsMap: map[string]Group{}}
-
-	query := url.Values{}
-	query.Add("recordCount", "250")
-
-	if len(groupType) > 0 {
-		query.Add("type", groupType)
-	}
-
-	for {
-		groupsURL := ro.BuildURL(os.Getenv("RINGCENTRAL_SERVER_URL"), "/glip/groups", true, query)
-		resp, err := client.Get(groupsURL)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		groupsResp, err := GetGroupsResponseFromHTTPResponse(resp)
-		if err != nil {
-			log.Fatal(err)
-		}
-		set.AddGroups(groupsResp.Records)
-
-		if len(groupsResp.Navigation.PrevPageToken) > 0 {
-			query.Add("pageToken", groupsResp.Navigation.PrevPageToken)
-		} else {
+	if 1 == 1 {
+		for _, group := range groups {
+			set, err := mergedusers.NewMergedUsersApiIds(httpClient,
+				os.Getenv("RINGCENTRAL_SERVER_URL"),
+				group.Members)
+			if err != nil {
+				log.Fatal(err)
+			}
+			//fmtutil.PrintJSON(set)
+			for id, user := range set.MergedUserMap {
+				thin := user.ToMergedUserThin()
+				fmt.Printf("ID [%v] NAME [%v][%v][%v]\n", id,
+					user.GlipPersonInfo.FirstName,
+					user.GlipPersonInfo.LastName,
+					thin.DisplayNumber)
+				fmtutil.PrintJSON(thin)
+			}
+			if 1 == 0 {
+				fmtutil.PrintJSON(set.MergedUserMap["557601020"])
+				user := set.MergedUserMap["557601020"]
+				thin := user.ToMergedUserThin()
+				fmtutil.PrintJSON(thin)
+			}
+			fmt.Printf("NUM_USERS [%v]\n", len(set.MergedUserMap))
 			break
 		}
+
 	}
-	return set
-}
 
-type GroupsSet struct {
-	GroupsMap map[string]Group
-}
-
-func (set *GroupsSet) AddGroups(groups []Group) {
-	for _, grp := range groups {
-		set.GroupsMap[grp.ID] = grp
-	}
-}
-
-func (set *GroupsSet) FindGroupsByName(groupName string) []Group {
-	groups := []Group{}
-	for _, group := range set.GroupsMap {
-		if groupName == group.Name {
-			groups = append(groups, group)
-		}
-	}
-	return groups
-}
-
-type Group struct {
-	ID               string    `json:"id,omitempty"`
-	Name             string    `json:"name,omitempty"`
-	Description      string    `json:"description,omitempty"`
-	CreationTime     time.Time `json:"creationTime,omitempty"`
-	LastModifiedTime time.Time `json:"lastModifiedTime,omitempty"`
-	Members          []string  `json:"members,omitempty"`
-}
-
-type GetGroupsResponse struct {
-	Records    []Group    `json:"records,omitempty"`
-	Navigation Navigation `json:"navigation,omitempty"`
-}
-
-func GetGroupsResponseFromHTTPResponse(resp *http.Response) (GetGroupsResponse, error) {
-	bytes, err := httputil.ResponseBody(resp)
-	if err != nil {
-		return GetGroupsResponse{}, err
-	}
-	var apiResp GetGroupsResponse
-	err = json.Unmarshal(bytes, &apiResp)
-	return apiResp, err
-}
-
-type Navigation struct {
-	PrevPageToken string `json:"prevPageToken,omitempty"`
-	NextPageToken string `json:"nextPageToken,omitempty"`
+	log.Println("DONE")
 }
