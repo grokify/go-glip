@@ -55,7 +55,7 @@ func (client *GlipWebhookClient) buildWebhookURL(urlOrUid string) string {
 	rs := rx.FindString(urlOrUid)
 	if len(rs) > 0 {
 		log.WithFields(log.Fields{
-			"lib": "go-glip",
+			"lib":                    "go-glip",
 			"request_url_http_match": urlOrUid}).Debug("Webhook URL has scheme.")
 		return urlOrUid
 	}
