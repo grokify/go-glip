@@ -96,6 +96,10 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 		return client.HttpClient.Do(req)*/
 }
 
+func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhookMessage) (*http.Response, error) {
+	return httputilmore.PostJsonSimple(url, message)
+}
+
 func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhookMessage) (*http.Response, error) {
 	return client.PostWebhook(strings.Join([]string{WebhookBaseURL, guid}, ""), message)
 }
