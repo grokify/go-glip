@@ -12,11 +12,7 @@ import (
 	"github.com/grokify/gotilla/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
-
-	"github.com/grokify/gotilla/fmt/fmtutil"
 )
-
-// 	"github.com/grokify/gotilla/fmt/fmtutil"
 
 const (
 	GlipWebhookBaseURLProduction   string = "https://hooks.glip.com/webhook/"
@@ -84,22 +80,9 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
 	if client.webhookVersion == 2 {
-		return httputilmore.PostJsonSimple(V1ToV2WewbhookUri(url), webhookBodyV1ToV2(message))
+		return client.PostWebhookV2(V1ToV2WewbhookUri(url), webhookBodyV1ToV2(message))
 	}
 	return httputilmore.PostJsonSimple(url, message)
-	/*
-		messageBytes, err := json.Marshal(message)
-		if err != nil {
-			return &http.Response{}, err
-		}
-
-		req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(messageBytes))
-		if err != nil {
-			return &http.Response{}, err
-		}
-
-		req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
-		return client.HttpClient.Do(req)*/
 }
 
 func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhookMessage) (*http.Response, error) {
@@ -158,8 +141,7 @@ func webhookBodyV1ToV2(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
 	for _, v1att := range v1msg.Attachments {
 		v2msg.Attachments = append(v2msg.Attachments, attachmentV1ToV2(v1att))
 	}
-	fmtutil.PrintJSON(v2msg)
-	//panic("Z")
+
 	return v2msg
 }
 
