@@ -6,8 +6,6 @@ import (
 	"time"
 
 	v2 "github.com/grokify/go-glip/v2"
-
-	"github.com/grokify/gotilla/fmt/fmtutil"
 )
 
 const (
@@ -47,8 +45,7 @@ func V1ToV2WebhookBody(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
 	for _, v1att := range v1msg.Attachments {
 		v2msg.Attachments = append(v2msg.Attachments, V1ToV2WebhookAttachment(v1att))
 	}
-	fmtutil.PrintJSON(v2msg)
-	//panic("Z")
+
 	return v2msg
 }
 
@@ -64,7 +61,7 @@ func V1ToV2WebhookAttachment(v1att Attachment) v2.Attachment {
 		Type:         v1att.Type,
 	}
 	if len(strings.TrimSpace(v2att.Type)) == 0 {
-		v2att.Type = "Card"
+		v2att.Type = AttachmentTypeCard
 	}
 	if len(v1att.AuthorName) > 0 {
 		v2att.Author = &v2.Author{
