@@ -14,6 +14,8 @@ const (
 	webhookV2Path                string = "/webhook/v2/"
 	rxGlipWebhookV2Pattern       string = `^https?://[^/]+/webhook/v2/[^/]+/?$`
 	rxGlipWebhookV1Pattern       string = `^(?i)(https?://[^/]+)/webhook/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?$`
+	FieldStyleLong               string = "Long"
+	FieldStyleShort              string = "Short"
 )
 
 var rxGlipWebhookV1 = regexp.MustCompile(rxGlipWebhookV1Pattern)
@@ -46,18 +48,22 @@ type GlipWebhookMessage struct {
 	Attachments []Attachment `json:"attachments,omitempty"`
 }
 
+func NewGlipWebhookMessage() GlipWebhookMessage {
+	return GlipWebhookMessage{Attachments: []Attachment{}}
+}
+
 type Attachment struct {
-	Author       Author  `json:"author,omitempty"`
-	Color        string  `json:"color,omitempty"`
-	Fallback     string  `json:"fallback,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
-	Footnote     string  `json:"footnote,omitempty"`
-	ImageUri     string  `json:"imageUri,omitempty"`
-	Intro        string  `json:"intro,omitempty"`
-	Text         string  `json:"text,omitempty"`
-	ThumbnailUri string  `json:"thumbnailUri,omitempty"`
-	Title        string  `json:"title,omitempty"`
-	Type         string  `json:"card,omitempty"`
+	Author       Author   `json:"author,omitempty"`
+	Color        string   `json:"color,omitempty"`
+	Fallback     string   `json:"fallback,omitempty"`
+	Fields       []Field  `json:"fields,omitempty"`
+	Footnote     Footnote `json:"footnote,omitempty"`
+	ImageUri     string   `json:"imageUri,omitempty"`
+	Intro        string   `json:"intro,omitempty"`
+	Text         string   `json:"text,omitempty"`
+	ThumbnailUri string   `json:"thumbnailUri,omitempty"`
+	Title        string   `json:"title,omitempty"`
+	Type         string   `json:"card,omitempty"`
 }
 
 type Author struct {
@@ -67,7 +73,7 @@ type Author struct {
 }
 
 type Field struct {
-	Style string `json:"style,omitempty"`
+	Style string `json:"style,omitempty"` // ['Short','Long']
 	Title string `json:"title,omitempty"`
 	Value string `json:"value,omitempty"`
 }

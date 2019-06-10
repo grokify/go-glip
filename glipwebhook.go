@@ -1,14 +1,15 @@
 package glipwebhook
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
+	v2 "github.com/grokify/go-glip/v2"
 	"github.com/grokify/gotilla/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
@@ -17,7 +18,6 @@ import (
 const (
 	GlipWebhookBaseURLProduction string = "https://hooks.glip.com/webhook/"
 	GlipWebhookBaseURLSandbox    string = "https://hooks-glip.devtest.ringcentral.com/webhook/"
-	HTTPMethodPost               string = "POST"
 )
 
 var (
@@ -25,13 +25,14 @@ var (
 )
 
 type GlipWebhookClient struct {
-	HttpClient *http.Client
-	FastClient fasthttp.Client
-	WebhookUrl string
+	HttpClient     *http.Client
+	FastClient     fasthttp.Client
+	WebhookUrl     string
+	webhookVersion int
 }
 
 func newGlipWebhookClientCore(urlOrGuid string) GlipWebhookClient {
-	client := GlipWebhookClient{}
+	client := GlipWebhookClient{webhookVersion: 2}
 	if len(urlOrGuid) > 0 {
 		client.WebhookUrl = client.buildWebhookURL(urlOrGuid)
 	}
@@ -76,18 +77,23 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 }
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
-	messageBytes, err := json.Marshal(message)
-	if err != nil {
-		return &http.Response{}, err
+	if client.webhookVersion == 2 {
+		return httputilmore.PostJsonSimple(v2.ToWebhookV2Uri(url), webhookBodyV1ToV2(message))
 	}
+	return httputilmore.PostJsonSimple(url, message)
+	/*
+		messageBytes, err := json.Marshal(message)
+		if err != nil {
+			return &http.Response{}, err
+		}
 
-	req, err := http.NewRequest(HTTPMethodPost, url, bytes.NewBuffer(messageBytes))
-	if err != nil {
-		return &http.Response{}, err
-	}
+		req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(messageBytes))
+		if err != nil {
+			return &http.Response{}, err
+		}
 
-	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
-	return client.HttpClient.Do(req)
+		req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
+		return client.HttpClient.Do(req)*/
 }
 
 func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhookMessage) (*http.Response, error) {
@@ -114,7 +120,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 	req.SetBody(bytes)
 
 	req.Header.SetRequestURI(url)
-	req.Header.SetMethod(HTTPMethodPost)
+	req.Header.SetMethod(http.MethodPost)
 	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
 
 	err = client.FastClient.Do(req, resp)
@@ -123,6 +129,55 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 
 func (client *GlipWebhookClient) PostWebhookGUIDFast(guidOrURL string, message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
 	return client.PostWebhookFast(client.buildWebhookURL(guidOrURL), message)
+}
+
+func webhookBodyV1ToV2(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
+	v2msg := v2.GlipWebhookMessage{
+		Activity:    v1msg.Activity,
+		IconUri:     v1msg.Icon,
+		Text:        v1msg.Body,
+		Title:       v1msg.Title,
+		Attachments: []v2.Attachment{}}
+	for _, v1att := range v1msg.Attachments {
+		v2msg.Attachments = append(v2msg.Attachments, attachmentV1ToV2(v1att))
+	}
+	return v2msg
+}
+
+func attachmentV1ToV2(v1att Attachment) v2.Attachment {
+	v2att := v2.Attachment{
+		Author: v2.Author{
+			Name:    v1att.AuthorName,
+			IconUri: v1att.AuthorLink,
+			Uri:     v1att.AuthorLink,
+		},
+		Color:  v1att.Color,
+		Fields: []v2.Field{},
+		Footnote: v2.Footnote{
+			IconUri: v1att.FooterIcon,
+			Text:    v1att.Footer,
+		},
+		ImageUri:     v1att.ImageURL,
+		Intro:        v1att.Pretext,
+		Text:         v1att.Text,
+		ThumbnailUri: v1att.ThumbnailURL,
+		Title:        v1att.Title,
+		Type:         v1att.Type,
+	}
+	if v1att.TS > 0 {
+		v2att.Footnote.Time = time.Unix(v1att.TS, 0)
+	}
+	for _, v1field := range v1att.Fields {
+		v2field := v2.Field{
+			Title: v1field.Title,
+			Value: v1field.Value}
+		if v1field.Short {
+			v2field.Style = v2.FieldStyleShort
+		} else {
+			v2field.Style = v2.FieldStyleLong
+		}
+	}
+	return v2att
 }
 
 type GlipWebhookMessage struct {
