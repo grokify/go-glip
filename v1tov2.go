@@ -58,8 +58,7 @@ func V1ToV2WebhookAttachment(v1att Attachment) v2.Attachment {
 		Text:         v1att.Text,
 		ThumbnailUri: v1att.ThumbnailURL,
 		Title:        v1att.Title,
-		Type:         v1att.Type,
-	}
+		Type:         v1att.Type}
 	if len(strings.TrimSpace(v2att.Type)) == 0 {
 		v2att.Type = AttachmentTypeCard
 	}
