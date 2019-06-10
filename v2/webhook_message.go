@@ -2,8 +2,6 @@ package v2
 
 import (
 	"encoding/json"
-	"regexp"
-	"strings"
 	"time"
 )
 
@@ -11,33 +9,9 @@ const (
 	GlipWebhookBaseURLProduction string = "https://hooks.glip.com/webhook/v2/"
 	GlipWebhookBaseURLSandbox    string = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
 	HTTPMethodPost               string = "POST"
-	webhookV2Path                string = "/webhook/v2/"
-	rxGlipWebhookV2Pattern       string = `^https?://[^/]+/webhook/v2/[^/]+/?$`
-	rxGlipWebhookV1Pattern       string = `^(?i)(https?://[^/]+)/webhook/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?$`
 	FieldStyleLong               string = "Long"
 	FieldStyleShort              string = "Short"
 )
-
-var rxGlipWebhookV1 = regexp.MustCompile(rxGlipWebhookV1Pattern)
-var rxGlipWebhookV2 = regexp.MustCompile(rxGlipWebhookV2Pattern)
-
-func ToWebhookV2Uri(input string) string {
-	input = strings.TrimSpace(input)
-	if len(input) == 0 {
-		return input
-	}
-	if strings.Index(input, "/") == -1 {
-		return GlipWebhookBaseURLProduction + input
-	}
-	if rxGlipWebhookV2.MatchString(input) {
-		return input
-	}
-	m := rxGlipWebhookV1.FindStringSubmatch(input)
-	if len(m) == 3 {
-		return m[1] + webhookV2Path + m[2]
-	}
-	return input
-}
 
 type GlipWebhookMessage struct {
 	Activity    string       `json:"activity,omitempty"`
@@ -53,17 +27,17 @@ func NewGlipWebhookMessage() GlipWebhookMessage {
 }
 
 type Attachment struct {
-	Author       Author   `json:"author,omitempty"`
-	Color        string   `json:"color,omitempty"`
-	Fallback     string   `json:"fallback,omitempty"`
-	Fields       []Field  `json:"fields,omitempty"`
-	Footnote     Footnote `json:"footnote,omitempty"`
-	ImageUri     string   `json:"imageUri,omitempty"`
-	Intro        string   `json:"intro,omitempty"`
-	Text         string   `json:"text,omitempty"`
-	ThumbnailUri string   `json:"thumbnailUri,omitempty"`
-	Title        string   `json:"title,omitempty"`
-	Type         string   `json:"card,omitempty"`
+	Author       *Author   `json:"author,omitempty"`
+	Color        string    `json:"color,omitempty"`
+	Fallback     string    `json:"fallback,omitempty"`
+	Fields       []Field   `json:"fields,omitempty"`
+	Footnote     *Footnote `json:"footnote,omitempty"`
+	ImageUri     string    `json:"imageUri,omitempty"`
+	Intro        string    `json:"intro,omitempty"`
+	Text         string    `json:"text,omitempty"`
+	ThumbnailUri string    `json:"thumbnailUri,omitempty"`
+	Title        string    `json:"title,omitempty"`
+	Type         string    `json:"type,omitempty"`
 }
 
 type Author struct {

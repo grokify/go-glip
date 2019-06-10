@@ -5,12 +5,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/grokify/go-glip"
 	"github.com/grokify/gotilla/fmt/fmtutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
+
+	glipwebhook "github.com/grokify/go-glip"
 )
 
 const (
@@ -271,6 +272,7 @@ func main() {
 	}
 
 	fmtutil.PrintJSON(msgs)
+	fmt.Printf("NUM_MSGS [%v]\n", len(msgs))
 
 	for _, msg := range msgs {
 		req, resp, err := client.PostMessageFast(msg)

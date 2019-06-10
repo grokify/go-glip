@@ -2,7 +2,6 @@ package glipwebhook
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -13,11 +12,17 @@ import (
 	"github.com/grokify/gotilla/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
+
+	"github.com/grokify/gotilla/fmt/fmtutil"
 )
 
+// 	"github.com/grokify/gotilla/fmt/fmtutil"
+
 const (
-	GlipWebhookBaseURLProduction string = "https://hooks.glip.com/webhook/"
-	GlipWebhookBaseURLSandbox    string = "https://hooks-glip.devtest.ringcentral.com/webhook/"
+	GlipWebhookBaseURLProduction   string = "https://hooks.glip.com/webhook/"
+	GlipWebhookBaseURLProductionV2 string = "https://hooks.glip.com/webhook/v2/"
+	GlipWebhookBaseURLSandbox      string = "https://hooks-glip.devtest.ringcentral.com/webhook/"
+	GlipWebhookBaseURLSandboxV2    string = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
 )
 
 var (
@@ -78,7 +83,7 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
 	if client.webhookVersion == 2 {
-		return httputilmore.PostJsonSimple(v2.ToWebhookV2Uri(url), webhookBodyV1ToV2(message))
+		return httputilmore.PostJsonSimple(V1ToV2WewbhookUri(url), webhookBodyV1ToV2(message))
 	}
 	return httputilmore.PostJsonSimple(url, message)
 	/*
@@ -115,19 +120,26 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 	req := fasthttp.AcquireRequest()
 	resp := fasthttp.AcquireResponse()
 
-	fmt.Printf("URL %v\n", url)
-
-	bytes, err := json.Marshal(message)
-	if err != nil {
-		return req, resp, err
+	if client.webhookVersion == 2 {
+		url = V1ToV2WewbhookUri(url)
+		bytes, err := json.Marshal(webhookBodyV1ToV2(message))
+		if err != nil {
+			return req, resp, err
+		}
+		req.SetBody(bytes)
+	} else {
+		bytes, err := json.Marshal(message)
+		if err != nil {
+			return req, resp, err
+		}
+		req.SetBody(bytes)
 	}
-	req.SetBody(bytes)
 
 	req.Header.SetRequestURI(url)
 	req.Header.SetMethod(http.MethodPost)
 	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
 
-	err = client.FastClient.Do(req, resp)
+	err := client.FastClient.Do(req, resp)
 	return req, resp, err
 }
 
@@ -145,22 +157,15 @@ func webhookBodyV1ToV2(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
 	for _, v1att := range v1msg.Attachments {
 		v2msg.Attachments = append(v2msg.Attachments, attachmentV1ToV2(v1att))
 	}
+	fmtutil.PrintJSON(v2msg)
+	//panic("Z")
 	return v2msg
 }
 
 func attachmentV1ToV2(v1att Attachment) v2.Attachment {
 	v2att := v2.Attachment{
-		Author: v2.Author{
-			Name:    v1att.AuthorName,
-			IconUri: v1att.AuthorLink,
-			Uri:     v1att.AuthorLink,
-		},
-		Color:  v1att.Color,
-		Fields: []v2.Field{},
-		Footnote: v2.Footnote{
-			IconUri: v1att.FooterIcon,
-			Text:    v1att.Footer,
-		},
+		Color:        v1att.Color,
+		Fields:       []v2.Field{},
 		ImageUri:     v1att.ImageURL,
 		Intro:        v1att.Pretext,
 		Text:         v1att.Text,
@@ -168,9 +173,25 @@ func attachmentV1ToV2(v1att Attachment) v2.Attachment {
 		Title:        v1att.Title,
 		Type:         v1att.Type,
 	}
-	if v1att.TS > 0 {
-		v2att.Footnote.Time = time.Unix(v1att.TS, 0)
+	if len(strings.TrimSpace(v2att.Type)) == 0 {
+		v2att.Type = "Card"
 	}
+	if len(v1att.AuthorName) > 0 {
+		v2att.Author = &v2.Author{
+			Name:    v1att.AuthorName,
+			IconUri: v1att.AuthorIcon,
+			Uri:     v1att.AuthorLink}
+	}
+	if len(strings.TrimSpace(v1att.FooterIcon)) > 0 || len(strings.TrimSpace(v1att.Footer)) > 0 {
+		v2att.Footnote = &v2.Footnote{
+			IconUri: v1att.FooterIcon,
+			Text:    v1att.Footer,
+		}
+		if v1att.TS > 0 {
+			v2att.Footnote.Time = time.Unix(v1att.TS, 0)
+		}
+	}
+
 	for _, v1field := range v1att.Fields {
 		v2field := v2.Field{
 			Title: v1field.Title,
@@ -180,7 +201,9 @@ func attachmentV1ToV2(v1att Attachment) v2.Attachment {
 		} else {
 			v2field.Style = v2.FieldStyleLong
 		}
+		v2att.Fields = append(v2att.Fields, v2field)
 	}
+
 	return v2att
 }
 
