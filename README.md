@@ -87,12 +87,12 @@ res, resp, err := client.PostWebhookFast(url, msg)
 res, resp, err := client.PostWebhookGUIDFast(guid, msg)
 ```
 
- [build-status-svg]: https://api.travis-ci.org/grokify/go-glip.svg?branch=master
- [build-status-link]: https://travis-ci.org/grokify/go-glip
+ [build-status-svg]: https://github.com/grokify/go-glip/workflows/build/badge.svg
+ [build-status-link]: https://github.com/grokify/go-glip/actions
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-glip
  [goreport-link]: https://goreportcard.com/report/github.com/grokify/go-glip
- [docs-godoc-svg]: https://img.shields.io/badge/docs-godoc-blue.svg
- [docs-godoc-link]: https://godoc.org/github.com/grokify/go-glip
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/go-glip
+ [docs-godoc-link]: https://pkg.go.dev/github.com/grokify/go-glip
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-link]: https://github.com/grokify/go-glip/blob/master/LICENSE.md
  [chat-svg]: https://img.shields.io/badge/chat-on%20glip-orange.svg
