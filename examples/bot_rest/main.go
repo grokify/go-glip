@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/grokify/gotilla/config"
-	hum "github.com/grokify/gotilla/net/httputilmore"
 	om "github.com/grokify/oauth2more"
+	"github.com/grokify/simplego/config"
+	hum "github.com/grokify/simplego/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 )
 

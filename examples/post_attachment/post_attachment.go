@@ -12,9 +12,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/grokify/gotilla/config"
-	"github.com/grokify/gotilla/fmt/fmtutil"
-	httputil "github.com/grokify/gotilla/net/httputilmore"
+	"github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/fmt/fmtutil"
+	httputil "github.com/grokify/simplego/net/httputilmore"
 	"github.com/pkg/errors"
 
 	"github.com/grokify/go-glip/examples"

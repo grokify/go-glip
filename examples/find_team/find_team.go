@@ -9,14 +9,14 @@ import (
 	"regexp"
 
 	ru "github.com/grokify/go-ringcentral/clientutil"
-	"github.com/grokify/gotilla/config"
-	"github.com/grokify/gotilla/fmt/fmtutil"
-	"github.com/grokify/gotilla/os/osutil"
 	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/simplego/os/osutil"
 	"github.com/jessevdk/go-flags"
 
-	"github.com/grokify/go-ringcentral/clientutil/glipgroups"
-	"github.com/grokify/go-ringcentral/clientutil/mergedusers"
+	"github.com/grokify/go-ringcentral/office/v1/util/glipgroups"
+	"github.com/grokify/go-ringcentral/office/v1/util/mergedusers"
 )
 
 type Options struct {

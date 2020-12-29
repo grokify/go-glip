@@ -15,10 +15,10 @@ import (
 	"github.com/caarlos0/env"
 	rc "github.com/grokify/go-ringcentral/client"
 	ru "github.com/grokify/go-ringcentral/clientutil"
-	"github.com/grokify/gotilla/config"
-	"github.com/grokify/gotilla/encoding/jsonutil"
-	"github.com/grokify/gotilla/fmt/fmtutil"
 	om "github.com/grokify/oauth2more"
+	"github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/encoding/jsonutil"
+	"github.com/grokify/simplego/fmt/fmtutil"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	v2 "github.com/grokify/go-glip/v2"
-	"github.com/grokify/gotilla/net/httputilmore"
+	"github.com/grokify/simplego/net/httputilmore"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )

@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/grokify/gotilla/config"
-	"github.com/grokify/gotilla/fmt/fmtutil"
-	"github.com/grokify/gotilla/net/httputilmore"
 	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/simplego/net/httputilmore"
 )
 
 // main finds Glip groups matching the following command:
