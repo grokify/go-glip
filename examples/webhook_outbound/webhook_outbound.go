@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
-	rc "github.com/grokify/go-ringcentral/client"
-	ru "github.com/grokify/go-ringcentral/clientutil"
+	rc "github.com/grokify/go-ringcentral/office/v1/client"
+	ru "github.com/grokify/go-ringcentral/office/v1/util"
 	om "github.com/grokify/oauth2more"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/encoding/jsonutil"

@@ -8,7 +8,7 @@ import (
 
 	"regexp"
 
-	ru "github.com/grokify/go-ringcentral/clientutil"
+	ru "github.com/grokify/go-ringcentral/office/v1/util"
 	ro "github.com/grokify/oauth2more/ringcentral"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"

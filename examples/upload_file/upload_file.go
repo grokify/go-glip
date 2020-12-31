@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"mime"
 	"net/http"
@@ -16,7 +17,6 @@ import (
 	ro "github.com/grokify/oauth2more/ringcentral"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/net/httputilmore"
 )
 
 // main finds Glip groups matching the following command:
@@ -64,7 +64,7 @@ func main() {
 				log.Fatal(err)
 			}
 			log.Printf("Status %v\n", resp.StatusCode)
-			bytes, err := httputilmore.ResponseBody(resp)
+			bytes, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -172,7 +172,7 @@ type GetGroupsResponse struct {
 }
 
 func GetGroupsResponseFromHTTPResponse(resp *http.Response) (GetGroupsResponse, error) {
-	bytes, err := httputilmore.ResponseBody(resp)
+	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return GetGroupsResponse{}, err
 	}

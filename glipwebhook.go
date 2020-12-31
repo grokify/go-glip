@@ -82,11 +82,19 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 	if client.webhookVersion == 2 {
 		return client.PostWebhookV2(V1ToV2WewbhookUri(url), webhookBodyV1ToV2(message))
 	}
-	return httputilmore.PostJsonSimple(url, message)
+	msgBytes, err := json.Marshal(message)
+	if err != nil {
+		return nil, err
+	}
+	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string]string{}, msgBytes)
 }
 
 func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhookMessage) (*http.Response, error) {
-	return httputilmore.PostJsonSimple(url, message)
+	msgBytes, err := json.Marshal(message)
+	if err != nil {
+		return nil, err
+	}
+	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string]string{}, msgBytes)
 }
 
 func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhookMessage) (*http.Response, error) {

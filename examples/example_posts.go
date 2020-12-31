@@ -1,7 +1,7 @@
 package examples
 
 import (
-	rc "github.com/grokify/go-ringcentral/client"
+	rc "github.com/grokify/go-ringcentral/office/v1/client"
 )
 
 func GetExamplePostAlertWarning() rc.GlipCreatePost {
