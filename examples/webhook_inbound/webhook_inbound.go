@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
-	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	glipwebhook "github.com/grokify/go-glip"

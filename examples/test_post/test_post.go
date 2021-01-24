@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	glipwebhook "github.com/grokify/go-glip"
 	"github.com/grokify/simplego/config"
-	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 

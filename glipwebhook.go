@@ -10,7 +10,7 @@ import (
 
 	v2 "github.com/grokify/go-glip/v2"
 	"github.com/grokify/simplego/net/httputilmore"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 )
 
@@ -57,9 +57,10 @@ func (client *GlipWebhookClient) buildWebhookURL(urlOrUid string) string {
 	rx := regexp.MustCompile(`^https?://`)
 	rs := rx.FindString(urlOrUid)
 	if len(rs) > 0 {
-		log.WithFields(log.Fields{
-			"lib":                    "go-glip",
-			"request_url_http_match": urlOrUid}).Debug("Webhook URL has scheme.")
+		log.Debug().
+			Str("lib", "go-glip").
+			Str("request_url_http_match", urlOrUid).
+			Msg("Webhook URL has scheme.")
 		return urlOrUid
 	}
 	return strings.Join([]string{WebhookBaseURL, urlOrUid}, "")

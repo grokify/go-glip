@@ -8,15 +8,15 @@ import (
 
 	"regexp"
 
-	ru "github.com/grokify/go-ringcentral/office/v1/util"
+	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	ro "github.com/grokify/oauth2more/ringcentral"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/grokify/simplego/os/osutil"
 	"github.com/jessevdk/go-flags"
 
-	"github.com/grokify/go-ringcentral/office/v1/util/glipgroups"
-	"github.com/grokify/go-ringcentral/office/v1/util/mergedusers"
+	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
+	"github.com/grokify/go-ringcentral-client/office/v1/util/mergedusers"
 )
 
 type Options struct {

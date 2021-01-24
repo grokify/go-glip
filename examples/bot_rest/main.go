@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	om "github.com/grokify/oauth2more"
 	"github.com/grokify/simplego/config"
 	hum "github.com/grokify/simplego/net/httputilmore"
-	log "github.com/sirupsen/logrus"
 )
 
 func main() {

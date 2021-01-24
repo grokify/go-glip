@@ -13,13 +13,13 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
-	rc "github.com/grokify/go-ringcentral/office/v1/client"
-	ru "github.com/grokify/go-ringcentral/office/v1/util"
+	rc "github.com/grokify/go-ringcentral-client/office/v1/client"
+	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	om "github.com/grokify/oauth2more"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/encoding/jsonutil"
 	"github.com/grokify/simplego/fmt/fmtutil"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 type RingCentralConfig struct {
@@ -73,13 +73,13 @@ func WebhookHandler(res http.ResponseWriter, req *http.Request) {
 
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	evt := &GenericEvent{}
 	err = json.Unmarshal(body, evt)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	subFmt := "/restapi/v1.0/subscription/.*threshold"
@@ -93,7 +93,9 @@ func WebhookHandler(res http.ResponseWriter, req *http.Request) {
 	//log.Info(jsonutil.MustMarshalString(req, true))
 	//fmt.Println(string(body))
 
-	log.Info(fmt.Sprintf("HOOK_BODY: %v", string(body)))
+	log.Info().
+		Str("body", string(body)).
+		Msg("hook-body")
 }
 
 func getRingCentralApiClient() (*rc.APIClient, error) {
@@ -112,10 +114,10 @@ func getRingCentralApiClient() (*rc.APIClient, error) {
 }
 
 func createWebhook(webhookURL string) error {
-	log.Info("Creating Hook...")
+	log.Info().Msg("Creating Hook...")
 	apiClient, err := getRingCentralApiClient()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	req := rc.CreateSubscriptionRequest{
@@ -130,16 +132,18 @@ func createWebhook(webhookURL string) error {
 		},
 		//ExpiresIn: int32(ExpiresIn),
 	}
-	log.Info(jsonutil.MustMarshalString(req, true))
+	log.Info().Msg(jsonutil.MustMarshalString(req, true))
 
 	info, resp, err := apiClient.PushNotificationsApi.CreateSubscription(
 		context.Background(),
 		req,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	} else if resp.StatusCode >= 300 {
-		log.Fatal(fmt.Sprintf("Status Code %v", resp.StatusCode))
+		log.Fatal().
+			Int("status", resp.StatusCode).
+			Msg("bad_status")
 	}
 	fmtutil.PrintJSON(info)
 	return nil
@@ -158,7 +162,7 @@ func main() {
 	appCfg := RingCentralConfig{}
 	err = env.Parse(&appCfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	if len(webhookURL) == 0 {

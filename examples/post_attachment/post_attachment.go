@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"mime"
 	"net/http"
 	"net/url"
@@ -17,9 +16,10 @@ import (
 	"github.com/grokify/simplego/fmt/fmtutil"
 
 	"github.com/grokify/go-glip/examples"
-	ru "github.com/grokify/go-ringcentral/office/v1/util"
-	"github.com/grokify/go-ringcentral/office/v1/util/glipgroups"
+	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
+	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/rs/zerolog/log"
 )
 
 // main finds Glip groups matching the following command:
@@ -39,34 +39,34 @@ func main() {
 
 	credsSet, err := ro.ReadFileCredentialsSet(credsFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 	creds, err := credsSet.Get(credsKey)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 	httpClient, err := creds.NewClient()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	apiClient, err := ru.NewApiClientHttpClientBaseURL(
 		httpClient, creds.Application.ServerURL)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	set, err := glipgroups.NewGroupsSetApiRequest(
 		httpClient, creds.Application.ServerURL, "Team")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	log.Printf("Searching %v Teams\n", len(set.GroupsMap))
 
 	group, err := set.FindGroupByName(wantGroupName)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	} else {
 		fmt.Printf("Found Team [%v]\n", wantGroupName)
 	}
@@ -75,17 +75,19 @@ func main() {
 		info, resp, err := apiClient.GlipApi.CreatePost(
 			context.Background(), group.ID, examples.GetExamplePostAlertWarning())
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		} else if resp.StatusCode >= 300 {
-			log.Fatal(fmt.Sprintf("Status [%v]", resp.StatusCode))
+			log.Fatal().Msg(fmt.Sprintf("Status [%v]", resp.StatusCode))
 		}
 		fmtutil.PrintJSON(info)
 		info, resp, err = apiClient.GlipApi.CreatePost(
 			context.Background(), group.ID, examples.GetExamplePostAlertSOS())
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		} else if resp.StatusCode >= 300 {
-			log.Fatal(fmt.Sprintf("Status [%v]", resp.StatusCode))
+			log.Fatal().
+				Int("status", resp.StatusCode).
+				Msg("response")
 		}
 		fmtutil.PrintJSON(info)
 	}
@@ -93,17 +95,18 @@ func main() {
 	if 1 == 0 {
 		resp, err := postFile(httpClient, creds.Application.ServerURL, group.ID, filepath)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		}
 		log.Printf("Status %v\n", resp.StatusCode)
 		bytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		}
-		log.Printf("%v\n", string(bytes))
+		log.Info().
+			Msg(string(bytes))
 	}
 
-	log.Println("DONE")
+	log.Info().Msg("DONE")
 }
 
 func postFile(client *http.Client, serverURL, groupId string, filepath string) (*http.Response, error) {
