@@ -94,6 +94,6 @@ res, resp, err := client.PostWebhookGUIDFast(guid, msg)
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/go-glip
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/go-glip
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/go-glip/blob/master/LICENSE.md
+ [license-url]: https://github.com/grokify/go-glip/blob/master/LICENSE
  [chat-svg]: https://img.shields.io/badge/chat-on%20glip-orange.svg
  [chat-url]: https://glipped.herokuapp.com/
