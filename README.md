@@ -96,4 +96,4 @@ res, resp, err := client.PostWebhookGUIDFast(guid, msg)
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/grokify/go-glip/blob/master/LICENSE
  [chat-svg]: https://img.shields.io/badge/chat-on%20glip-orange.svg
- [chat-url]: https://glipped.herokuapp.com/
+ [chat-url]: https://ringcentral.github.io/join-ringcentral/
