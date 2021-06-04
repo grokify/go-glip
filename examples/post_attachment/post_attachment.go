@@ -7,19 +7,20 @@ import (
 	"io/ioutil"
 	"mime"
 	"net/http"
-	"net/url"
 	"os"
 	"regexp"
 	"strings"
 
-	"github.com/grokify/simplego/config"
-	"github.com/grokify/simplego/fmt/fmtutil"
-
-	"github.com/grokify/go-glip/examples"
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/grokify/simplego/config"
+	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/simplego/net/urlutil"
 	"github.com/rs/zerolog/log"
+
+	"github.com/grokify/go-glip"
+	"github.com/grokify/go-glip/examples"
 )
 
 // main finds Glip groups matching the following command:
@@ -118,7 +119,8 @@ func postFile(client *http.Client, serverURL, groupId string, filepath string) (
 	filepathParts := strings.Split(filepath, "/")
 	filename := filepathParts[len(filepathParts)-1]
 
-	uploadURL := ro.BuildURL(serverURL, "/glip/posts", true, url.Values{})
+	uploadURL := urlutil.JoinAbsolute(serverURL, glip.ApiPathGlipPosts)
+	//uploadURL := ro.BuildURL(serverURL, "/glip/posts", true, url.Values{})
 
 	req, err := http.NewRequest("POST", uploadURL, file)
 	if err != nil {

@@ -1,4 +1,4 @@
-package glipwebhook
+package glip
 
 import (
 	"encoding/json"
@@ -15,11 +15,14 @@ import (
 )
 
 const (
-	GlipWebhookBaseURLProduction   string = "https://hooks.glip.com/webhook/"
-	GlipWebhookBaseURLProductionV2 string = "https://hooks.glip.com/webhook/v2/"
-	GlipWebhookBaseURLSandbox      string = "https://hooks-glip.devtest.ringcentral.com/webhook/"
-	GlipWebhookBaseURLSandboxV2    string = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
-	AttachmentTypeCard             string = "Card"
+	ApiPathGlipFiles               = "/restapi/v1.0/glip/files"
+	ApiPathGlipGroups              = "/restapi/v1.0/glip/groups"
+	ApiPathGlipPosts               = "/restapi/v1.0/glip/posts"
+	GlipWebhookBaseURLProduction   = "https://hooks.glip.com/webhook/"
+	GlipWebhookBaseURLProductionV2 = "https://hooks.glip.com/webhook/v2/"
+	GlipWebhookBaseURLSandbox      = "https://hooks-glip.devtest.ringcentral.com/webhook/"
+	GlipWebhookBaseURLSandboxV2    = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
+	AttachmentTypeCard             = "Card"
 )
 
 var (

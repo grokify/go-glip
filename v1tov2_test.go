@@ -1,4 +1,4 @@
-package glipwebhook
+package glip
 
 import (
 	"testing"

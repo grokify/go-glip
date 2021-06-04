@@ -14,9 +14,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/grokify/go-glip"
 	ro "github.com/grokify/oauth2more/ringcentral"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/simplego/net/urlutil"
 )
 
 // main finds Glip groups matching the following command:
@@ -48,7 +50,10 @@ func main() {
 		panic(err)
 	}
 
-	set := getGroupsSet(httpClient, "Team")
+	set, err := getGroupsSet(httpClient, "Team")
+	if err != nil {
+		panic(err)
+	}
 
 	log.Printf("Searching %v Teams for %v\n", len(set.GroupsMap), wantGroupName)
 
@@ -88,16 +93,21 @@ func postFile(client *http.Client, groupId string, filepath string) (*http.Respo
 	query.Add("groupId", groupId)
 	query.Add("name", filename)
 
-	uploadURL := ro.BuildURL(os.Getenv("RINGCENTRAL_SERVER_URL"), "/glip/files", true, query)
-
-	req, err := http.NewRequest("POST", uploadURL, file)
+	uploadURL, err := urlutil.URLAddQueryValuesString(
+		urlutil.JoinAbsolute(os.Getenv("RINGCENTRAL_SERVER_URL"), glip.ApiPathGlipFiles),
+		query)
 	if err != nil {
-		return &http.Response{}, nil
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, uploadURL.String(), file)
+	if err != nil {
+		return nil, err
 	}
 
 	rs := regexp.MustCompile(`(.[^.]+)$`).FindStringSubmatch(filepath)
 	if len(rs) < 2 {
-		return &http.Response{}, err
+		return nil, err
 	}
 	req.Header.Add("Content-Type", mime.TypeByExtension(rs[1]))
 	req.Header.Add("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
@@ -105,7 +115,7 @@ func postFile(client *http.Client, groupId string, filepath string) (*http.Respo
 	return client.Do(req)
 }
 
-func getGroupsSet(client *http.Client, groupType string) GroupsSet {
+func getGroupsSet(client *http.Client, groupType string) (GroupsSet, error) {
 	set := GroupsSet{GroupsMap: map[string]Group{}}
 
 	query := url.Values{}
@@ -116,15 +126,18 @@ func getGroupsSet(client *http.Client, groupType string) GroupsSet {
 	}
 
 	for {
-		groupsURL := ro.BuildURL(os.Getenv("RINGCENTRAL_SERVER_URL"), "/glip/groups", true, query)
+		groupsURL, err := ro.BuildURL(os.Getenv("RINGCENTRAL_SERVER_URL"), "/glip/groups", true, query)
+		if err != nil {
+			return set, err
+		}
 		resp, err := client.Get(groupsURL)
 		if err != nil {
-			log.Fatal(err)
+			return set, err
 		}
 
 		groupsResp, err := GetGroupsResponseFromHTTPResponse(resp)
 		if err != nil {
-			log.Fatal(err)
+			return set, err
 		}
 		set.AddGroups(groupsResp.Records)
 
@@ -134,7 +147,7 @@ func getGroupsSet(client *http.Client, groupType string) GroupsSet {
 			break
 		}
 	}
-	return set
+	return set, nil
 }
 
 type GroupsSet struct {
