@@ -1,10 +1,10 @@
 Glip Webhook Client in Go
 =========================
 
-[![Build Status][build-status-svg]][build-status-link]
-[![Go Report Card][goreport-svg]][goreport-link]
-[![Docs][docs-godoc-svg]][docs-godoc-link]
-[![License][license-svg]][license-link]
+[![Build Status][build-status-svg]][build-status-url]
+[![Go Report Card][goreport-svg]][goreport-url]
+[![Docs][docs-godoc-svg]][docs-godoc-url]
+[![License][license-svg]][license-url]
 [![Chat][chat-svg]][chat-url]
 
 ## Installation
@@ -87,13 +87,13 @@ res, resp, err := client.PostWebhookFast(url, msg)
 res, resp, err := client.PostWebhookGUIDFast(guid, msg)
 ```
 
- [build-status-svg]: https://github.com/grokify/go-glip/workflows/build/badge.svg
- [build-status-link]: https://github.com/grokify/go-glip/actions
+ [build-status-svg]: https://github.com/grokify/go-glip/workflows/go%20build/badge.svg
+ [build-status-url]: https://github.com/grokify/go-glip/actions
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-glip
- [goreport-link]: https://goreportcard.com/report/github.com/grokify/go-glip
+ [goreport-url]: https://goreportcard.com/report/github.com/grokify/go-glip
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/go-glip
- [docs-godoc-link]: https://pkg.go.dev/github.com/grokify/go-glip
+ [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/go-glip
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-link]: https://github.com/grokify/go-glip/blob/master/LICENSE.md
+ [license-url]: https://github.com/grokify/go-glip/blob/master/LICENSE.md
  [chat-svg]: https://img.shields.io/badge/chat-on%20glip-orange.svg
  [chat-url]: https://glipped.herokuapp.com/
