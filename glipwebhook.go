@@ -2,7 +2,6 @@ package glip
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
@@ -69,6 +68,7 @@ func (client *GlipWebhookClient) buildWebhookURL(urlOrUid string) string {
 	return strings.Join([]string{WebhookBaseURL, urlOrUid}, "")
 }
 
+/*
 func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte, error) {
 	resp, err := client.PostMessage(message)
 	if err != nil {
@@ -77,6 +77,7 @@ func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
 }
+s*/
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
 	return client.PostWebhook(client.WebhookUrl, message)
@@ -91,6 +92,10 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 		return nil, err
 	}
 	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, msgBytes)
+}
+
+func (client *GlipWebhookClient) PostWebhookV1Bytes(url string, message []byte) (*http.Response, error) {
+	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, message)
 }
 
 func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhookMessage) (*http.Response, error) {
