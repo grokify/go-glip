@@ -74,7 +74,7 @@ func main() {
 
 	if 1 == 1 {
 		info, resp, err := apiClient.GlipApi.CreatePost(
-			context.Background(), group.ID, examples.GetExamplePostAlertWarning())
+			context.Background(), group.ID, examples.ExamplePostBodyAlertWarning())
 		if err != nil {
 			log.Fatal().Err(err)
 		} else if resp.StatusCode >= 300 {
@@ -82,7 +82,7 @@ func main() {
 		}
 		fmtutil.PrintJSON(info)
 		info, resp, err = apiClient.GlipApi.CreatePost(
-			context.Background(), group.ID, examples.GetExamplePostAlertSOS())
+			context.Background(), group.ID, examples.ExamplePostBodyAlertSOS())
 		if err != nil {
 			log.Fatal().Err(err)
 		} else if resp.StatusCode >= 300 {
