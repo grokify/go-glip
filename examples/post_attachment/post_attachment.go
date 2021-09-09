@@ -13,7 +13,7 @@ import (
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
-	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/grokify/oauth2more/credentials"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/grokify/simplego/net/urlutil"
@@ -38,7 +38,7 @@ func main() {
 	flag.StringVar(&filepath, "file", "/path/to/myfile.png", "Filepath")
 	flag.Parse()
 
-	credsSet, err := ro.ReadFileCredentialsSet(credsFile)
+	credsSet, err := credentials.ReadFileCredentialsSet(credsFile, true)
 	if err != nil {
 		log.Fatal().Err(err)
 	}

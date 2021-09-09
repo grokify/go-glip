@@ -9,6 +9,7 @@ import (
 	"regexp"
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
+	"github.com/grokify/oauth2more/credentials"
 	ro "github.com/grokify/oauth2more/ringcentral"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
@@ -49,14 +50,13 @@ func main() {
 	}
 
 	httpClient, err := ro.NewClientPassword(
-		ro.ApplicationCredentials{
+		credentials.ApplicationCredentials{
 			ServerURL:    os.Getenv("RINGCENTRAL_SERVER_URL"),
 			ClientID:     os.Getenv("RINGCENTRAL_CLIENT_ID"),
 			ClientSecret: os.Getenv("RINGCENTRAL_CLIENT_SECRET")},
-		ro.PasswordCredentials{
-			Username:  os.Getenv("RINGCENTRAL_USERNAME"),
-			Extension: os.Getenv("RINGCENTRAL_EXTENSION"),
-			Password:  os.Getenv("RINGCENTRAL_PASSWORD")})
+		credentials.PasswordCredentials{
+			Username: os.Getenv("RINGCENTRAL_USERNAME"),
+			Password: os.Getenv("RINGCENTRAL_PASSWORD")})
 	if err != nil {
 		log.Fatal(fmt.Printf("AUTH: %v\n", err))
 	}
