@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/jessevdk/go-flags"
-	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 
 	glipwebhook "github.com/grokify/go-glip"
@@ -18,14 +16,6 @@ import (
 const (
 	DEFAULT_URL = "https://hooks.glip.com/webhook/1111-deadbeef-8888"
 )
-
-func loadEnv() error {
-	envPaths := []string{}
-	if len(os.Getenv("ENV_PATH")) > 0 {
-		envPaths = append(envPaths, os.Getenv("ENV_PATH"))
-	}
-	return godotenv.Load(envPaths...)
-}
 
 type cliOptions struct {
 	WebhookUrlOrGuid string `short:"u" long:"url" description:"URL or GUID for Webhook" required:"true"`
