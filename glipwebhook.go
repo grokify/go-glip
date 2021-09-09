@@ -90,7 +90,7 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 	if err != nil {
 		return nil, err
 	}
-	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string]string{}, msgBytes)
+	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, msgBytes)
 }
 
 func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhookMessage) (*http.Response, error) {
@@ -98,7 +98,7 @@ func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhoo
 	if err != nil {
 		return nil, err
 	}
-	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string]string{}, msgBytes)
+	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, msgBytes)
 }
 
 func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhookMessage) (*http.Response, error) {
