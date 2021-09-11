@@ -37,7 +37,7 @@ func main() {
 
 	cset, creds, err := credentials.ReadCredentialsFromFile(opts.CredsPath, opts.Account, true)
 	if err != nil {
-		fmt.Println("accounts [%s]\n", strings.Join(cset.Accounts(), ", "))
+		fmt.Printf("accounts [%s]\n", strings.Join(cset.Accounts(), ", "))
 		log.Fatal(err)
 	}
 
