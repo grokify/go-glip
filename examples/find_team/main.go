@@ -17,12 +17,9 @@ import (
 )
 
 type Options struct {
-	CredsPath string `short:"c" long:"credspath" description:"Environment File Path" required:"true"`
-	Account   string `short:"a" long:"account" description:"Environment Variable Name"`
-	Token     string `short:"t" long:"token" description:"Token"`
-	CLI       []bool `long:"cli" description:"CLI"`
-	Group     string `short:"g" long:"group" description:"Group Name" required:"true"`
-	LoadUsers []bool `short:"u" long:"users" description:"List Users"`
+	credentials.Options
+	Groups    []string `short:"g" long:"group" description:"Group Name" required:"true"`
+	LoadUsers []bool   `short:"u" long:"users" description:"List Users"`
 }
 
 // main finds Glip groups matching the following command:
@@ -67,54 +64,55 @@ func main() {
 	}
 	log.Printf("Searching %v Teams\n", len(set.GroupsMap))
 
-	groups := set.FindGroupsByName(opts.Group)
+	for _, g := range opts.Groups {
+		groups := set.FindGroupsByName(g)
 
-	fmtutil.PrintJSON(groups)
+		fmtutil.PrintJSON(groups)
 
-	if len(opts.LoadUsers) > 0 {
-		for _, group := range groups {
-			memberCount := len(group.Members)
-			for i, memberId := range group.Members {
-				n := i + 1
-				fmt.Printf("[%v/%v] %v", n, memberCount, memberId)
-				info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberId)
-				if err != nil {
-					log.Fatal(fmt.Sprintf("API ERR: %v\n", err))
-				} else if resp.StatusCode >= 300 {
-					log.Fatal(fmt.Sprintf("API RESP %v\n", resp.StatusCode))
+		if len(opts.LoadUsers) > 0 {
+			for _, group := range groups {
+				memberCount := len(group.Members)
+				for i, memberId := range group.Members {
+					n := i + 1
+					fmt.Printf("[%v/%v] %v", n, memberCount, memberId)
+					info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberId)
+					if err != nil {
+						log.Fatal(fmt.Sprintf("API ERR: %v\n", err))
+					} else if resp.StatusCode >= 300 {
+						log.Fatal(fmt.Sprintf("API RESP %v\n", resp.StatusCode))
+					}
+					fmtutil.PrintJSON(info)
 				}
-				fmtutil.PrintJSON(info)
 			}
 		}
-	}
 
-	if 1 == 1 {
-		for _, group := range groups {
-			set, err := mergedusers.NewMergedUsersApiIds(httpClient,
-				serverURL,
-				group.Members)
-			if err != nil {
-				log.Fatal(err)
+		if 1 == 0 {
+			for _, group := range groups {
+				set, err := mergedusers.NewMergedUsersApiIds(httpClient,
+					serverURL,
+					group.Members)
+				if err != nil {
+					log.Fatal(err)
+				}
+				//fmtutil.PrintJSON(set)
+				for id, user := range set.MergedUserMap {
+					thin := user.ToMergedUserThin()
+					fmt.Printf("ID [%v] NAME [%v][%v][%v]\n", id,
+						user.GlipPersonInfo.FirstName,
+						user.GlipPersonInfo.LastName,
+						thin.DisplayNumber)
+					fmtutil.PrintJSON(thin)
+				}
+				if 1 == 0 {
+					fmtutil.PrintJSON(set.MergedUserMap["557601020"])
+					user := set.MergedUserMap["557601020"]
+					thin := user.ToMergedUserThin()
+					fmtutil.PrintJSON(thin)
+				}
+				fmt.Printf("NUM_USERS [%v]\n", len(set.MergedUserMap))
+				break
 			}
-			//fmtutil.PrintJSON(set)
-			for id, user := range set.MergedUserMap {
-				thin := user.ToMergedUserThin()
-				fmt.Printf("ID [%v] NAME [%v][%v][%v]\n", id,
-					user.GlipPersonInfo.FirstName,
-					user.GlipPersonInfo.LastName,
-					thin.DisplayNumber)
-				fmtutil.PrintJSON(thin)
-			}
-			if 1 == 0 {
-				fmtutil.PrintJSON(set.MergedUserMap["557601020"])
-				user := set.MergedUserMap["557601020"]
-				thin := user.ToMergedUserThin()
-				fmtutil.PrintJSON(thin)
-			}
-			fmt.Printf("NUM_USERS [%v]\n", len(set.MergedUserMap))
-			break
 		}
-
 	}
 
 	log.Println("DONE")
