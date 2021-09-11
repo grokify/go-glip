@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/grokify/simplego/fmt/fmtutil"
@@ -27,7 +28,22 @@ const (
 
 type cliOptions struct {
 	WebhookUrlOrGuid string `short:"u" long:"url" description:"URL or GUID for Webhook" required:"true"`
-	Type             string `short:"t" long:"type" description:"Type [simple,attachment,salesforce,alert]" required:"true"`
+	Type             string `short:"t" long:"type" description:"Type [simple,attachment,salesforce,alert]"`
+	File             string `short:"f" long:"file" description:"File containing JSON to use for body"`
+	Data             string `short:"d" long:"data" description:"JSON to use for body"`
+}
+
+func getBodyBytes(webhookUrlOrGuid string, body []byte) {
+	resp, err := httpsimple.Do(httpsimple.SimpleRequest{
+		Method: http.MethodPost,
+		URL:    webhookUrlOrGuid,
+		Body:   body,
+		IsJSON: true})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("STATUS [%d]\n", resp.StatusCode)
+	fmt.Println(string(ioutilmore.ReadAllOrError(resp.Body)))
 }
 
 func main() {
@@ -42,17 +58,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if opts.Type == ExampleTypeCard {
-		resp, err := httpsimple.Do(httpsimple.SimpleRequest{
-			Method: http.MethodPost,
-			URL:    opts.WebhookUrlOrGuid,
-			Body:   examples.ExampleHookBodyCardBytes(),
-			IsJSON: true})
+	if len(strings.TrimSpace(opts.File)) > 0 {
+		bytes, err := os.ReadFile(opts.File)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("STATUS [%d]\n", resp.StatusCode)
-		fmt.Println(string(ioutilmore.ReadAllOrError(resp.Body)))
+		getBodyBytes(opts.WebhookUrlOrGuid, bytes)
+	} else if len(strings.TrimSpace(opts.Data)) > 0 {
+		getBodyBytes(opts.WebhookUrlOrGuid, []byte(opts.Data))
+	} else if opts.Type == ExampleTypeCard {
+		getBodyBytes(opts.WebhookUrlOrGuid,
+			examples.ExampleHookBodyCardBytes())
 	} else {
 		msgs := []glipwebhook.GlipWebhookMessage{}
 
