@@ -4,16 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-
-	"regexp"
+	"net/http"
+	"strings"
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/oauth2more/credentials"
-	ro "github.com/grokify/oauth2more/ringcentral"
-	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/os/osutil"
 	"github.com/jessevdk/go-flags"
 
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
@@ -21,6 +17,10 @@ import (
 )
 
 type Options struct {
+	CredsPath string `short:"c" long:"credspath" description:"Environment File Path" required:"true"`
+	Account   string `short:"a" long:"account" description:"Environment Variable Name"`
+	Token     string `short:"t" long:"token" description:"Token"`
+	CLI       []bool `long:"cli" description:"CLI"`
 	Group     string `short:"g" long:"group" description:"Group Name" required:"true"`
 	LoadUsers []bool `short:"u" long:"users" description:"List Users"`
 }
@@ -28,46 +28,40 @@ type Options struct {
 // main finds Glip groups matching the following command:
 // find_team -group "My Group Name"
 func main() {
-	if err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env"); err != nil {
-		log.Fatal(err)
-	}
-
-	/*
-		var wantGroupName string
-		flag.StringVar(&wantGroupName, "group", "All Employees", "Glip Group Name")
-		flag.Parse()
-	*/
 	opts := Options{}
-
 	_, err := flags.Parse(&opts)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("USER [%v]\n", os.Getenv("RINGCENTRAL_USERNAME"))
+	fmtutil.PrintJSON(opts)
 
-	if 1 == 0 {
-		fmtutil.PrintJSON(osutil.EnvFiltered(regexp.MustCompile(`RINGCENTRAL`)))
-	}
-
-	httpClient, err := ro.NewClientPassword(
-		credentials.ApplicationCredentials{
-			ServerURL:    os.Getenv("RINGCENTRAL_SERVER_URL"),
-			ClientID:     os.Getenv("RINGCENTRAL_CLIENT_ID"),
-			ClientSecret: os.Getenv("RINGCENTRAL_CLIENT_SECRET")},
-		credentials.PasswordCredentials{
-			Username: os.Getenv("RINGCENTRAL_USERNAME"),
-			Password: os.Getenv("RINGCENTRAL_PASSWORD")})
+	cset, creds, err := credentials.ReadCredentialsFromFile(opts.CredsPath, opts.Account, true)
 	if err != nil {
-		log.Fatal(fmt.Printf("AUTH: %v\n", err))
+		fmt.Println("accounts [%s]\n", strings.Join(cset.Accounts(), ", "))
+		log.Fatal(err)
 	}
+
+	var httpClient *http.Client
+
+	if len(opts.CLI) > 0 {
+		httpClient, err = creds.NewClientCli("mystate")
+	} else {
+		httpClient, err = creds.NewClient()
+	}
+	if err != nil {
+		log.Fatal(err)
+		panic("failed")
+	}
+
+	serverURL := "https://platform.ringcentral.com"
 
 	apiClient, err := ru.NewApiClientHttpClientBaseURL(
-		httpClient, os.Getenv("RINGCENTRAL_SERVER_URL"))
+		httpClient, serverURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	set, err := glipgroups.NewGroupsSetApiRequest(httpClient, os.Getenv("RINGCENTRAL_SERVER_URL"), "Team")
+	set, err := glipgroups.NewGroupsSetApiRequest(httpClient, serverURL, "Team")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,7 +91,7 @@ func main() {
 	if 1 == 1 {
 		for _, group := range groups {
 			set, err := mergedusers.NewMergedUsersApiIds(httpClient,
-				os.Getenv("RINGCENTRAL_SERVER_URL"),
+				serverURL,
 				group.Members)
 			if err != nil {
 				log.Fatal(err)
