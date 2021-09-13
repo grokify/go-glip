@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/oauth2more/credentials"
@@ -32,9 +31,8 @@ func main() {
 	}
 	fmtutil.PrintJSON(opts)
 
-	cset, creds, err := credentials.ReadCredentialsFromFile(opts.CredsPath, opts.Account, true)
+	creds, err := credentials.ReadCredentialsFromFile(opts.CredsPath, opts.Account, true)
 	if err != nil {
-		fmt.Printf("accounts [%s]\n", strings.Join(cset.Accounts(), ", "))
 		log.Fatal(err)
 	}
 
