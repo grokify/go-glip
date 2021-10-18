@@ -13,7 +13,7 @@ import (
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
-	"github.com/grokify/oauth2more/credentials"
+	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/grokify/simplego/net/urlutil"
@@ -46,19 +46,19 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err)
 	}
-	httpClient, err := creds.NewClient()
+	httpClient, err := creds.NewClient(context.Background())
 	if err != nil {
 		log.Fatal().Err(err)
 	}
 
 	apiClient, err := ru.NewApiClientHttpClientBaseURL(
-		httpClient, creds.Application.ServerURL)
+		httpClient, creds.OAuth2.ServerURL)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
 
 	set, err := glipgroups.NewGroupsSetApiRequest(
-		httpClient, creds.Application.ServerURL, "Team")
+		httpClient, creds.OAuth2.ServerURL, "Team")
 	if err != nil {
 		log.Fatal().Err(err)
 	}
@@ -94,7 +94,7 @@ func main() {
 	}
 
 	if 1 == 0 {
-		resp, err := postFile(httpClient, creds.Application.ServerURL, group.ID, filepath)
+		resp, err := postFile(httpClient, creds.OAuth2.ServerURL, group.ID, filepath)
 		if err != nil {
 			log.Fatal().Err(err)
 		}

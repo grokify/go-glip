@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	om "github.com/grokify/oauth2more"
+	"github.com/grokify/goauth"
 	"github.com/grokify/simplego/config"
 	hum "github.com/grokify/simplego/net/httputilmore"
 )
@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	client, err := om.NewClientTokenJSON(
+	client, err := goauth.NewClientTokenJSON(
 		context.Background(),
 		[]byte(os.Getenv("RINGCENTRAL_TOKEN_JSON")),
 	)

@@ -1,13 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/grokify/go-glip/examples"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
-	"github.com/grokify/oauth2more/credentials"
+	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/grokify/simplego/net/http/httpsimple"
 	"github.com/jessevdk/go-flags"
@@ -45,7 +46,7 @@ func main() {
 	if opts.UseCLI() {
 		httpClient, err = creds.NewClientCli("mystate")
 	} else {
-		httpClient, err = creds.NewClient()
+		httpClient, err = creds.NewClient(context.Background())
 	}
 	if err != nil {
 		log.Fatal().Err(err).
@@ -54,7 +55,7 @@ func main() {
 	}
 
 	set, err := glipgroups.NewGroupsSetApiRequest(
-		httpClient, creds.Application.ServerURL, "Team")
+		httpClient, creds.OAuth2.ServerURL, "Team")
 	if err != nil {
 		log.Fatal().Err(err)
 	}

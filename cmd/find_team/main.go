@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
-	"github.com/grokify/oauth2more/credentials"
+	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/jessevdk/go-flags"
 
@@ -41,7 +41,7 @@ func main() {
 	if len(opts.CLI) > 0 {
 		httpClient, err = creds.NewClientCli("mystate")
 	} else {
-		httpClient, err = creds.NewClient()
+		httpClient, err = creds.NewClient(context.Background())
 	}
 	if err != nil {
 		log.Fatal(err)

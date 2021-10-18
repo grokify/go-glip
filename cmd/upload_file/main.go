@@ -15,8 +15,8 @@ import (
 	"time"
 
 	"github.com/grokify/go-glip"
-	"github.com/grokify/oauth2more/credentials"
-	ro "github.com/grokify/oauth2more/ringcentral"
+	"github.com/grokify/goauth/credentials"
+	ro "github.com/grokify/goauth/ringcentral"
 	"github.com/grokify/simplego/config"
 	"github.com/grokify/simplego/fmt/fmtutil"
 	"github.com/grokify/simplego/net/urlutil"
@@ -39,13 +39,7 @@ func main() {
 	fmt.Printf("FILE %v\n", filepath)
 
 	httpClient, err := ro.NewClientPassword(
-		credentials.ApplicationCredentials{
-			ServerURL:    os.Getenv("RINGCENTRAL_SERVER_URL"),
-			ClientID:     os.Getenv("RINGCENTRAL_CLIENT_ID"),
-			ClientSecret: os.Getenv("RINGCENTRAL_CLIENT_SECRET")},
-		credentials.PasswordCredentials{
-			Username: os.Getenv("RINGCENTRAL_USERNAME"),
-			Password: os.Getenv("RINGCENTRAL_PASSWORD")})
+		credentials.NewOAuth2CredentialsEnv("RINGCENTRAL_"))
 	if err != nil {
 		panic(err)
 	}
