@@ -22,7 +22,7 @@ func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
 				Text:         "Attachment text ♠♥♣♦",
 				Pretext:      "Attachment pretext appears before the attachment block ♠♥♣♦",
 				ImageURL:     "https://media3.giphy.com/media/l4FssTixISsPStXRC/giphy.gif",
-				ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
+				ThumbnailURL: "https://raw.githubusercontent.com/grokify/go-glip/master/docs/example_thumbnail-url.png",
 				Fields: []glipwebhook.Field{
 					{
 						Title: "Field 1 ♠♥♣♦",
@@ -38,7 +38,7 @@ func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
 						Short: false},
 				},
 				Footer:     "Attachment footer and timestamp ♠♥♣♦",
-				FooterIcon: "http://www.iconsdb.com/icons/preview/red/square-ios-app-xxl.png",
+				FooterIcon: "https://raw.githubusercontent.com/grokify/go-glip/master/docs/example_footer-icon.png",
 				TS:         time.Now().Unix(),
 			},
 		},
