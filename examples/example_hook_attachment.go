@@ -7,7 +7,7 @@ import (
 )
 
 func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
-	msg := glipwebhook.GlipWebhookMessage{
+	return glipwebhook.GlipWebhookMessage{
 		Icon:  "https://i.imgur.com/9yILi61.png",
 		Title: "**Title of the post ♠♥♣♦**",
 		Body:  "Body of the post ♠♥♣♦",
@@ -43,11 +43,4 @@ func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
 			},
 		},
 	}
-	if 1 == 0 {
-		msg.Icon = "https://example.com/post_icon.png"
-		msg.Attachments[0].ImageURL = "https://example.com/congrats.gif"
-		msg.Attachments[0].FooterIcon = "https://example.com/footer_icon.png"
-		msg.Attachments[0].AuthorIcon = "https://example.com/author_icon.png"
-	}
-	return msg
 }
