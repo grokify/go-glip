@@ -13,21 +13,6 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-const (
-	ApiPathGlipFiles               = "/restapi/v1.0/glip/files"
-	ApiPathGlipGroups              = "/restapi/v1.0/glip/groups"
-	ApiPathGlipPosts               = "/restapi/v1.0/glip/posts"
-	GlipWebhookBaseURLProduction   = "https://hooks.glip.com/webhook/"
-	GlipWebhookBaseURLProductionV2 = "https://hooks.glip.com/webhook/v2/"
-	GlipWebhookBaseURLSandbox      = "https://hooks-glip.devtest.ringcentral.com/webhook/"
-	GlipWebhookBaseURLSandboxV2    = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
-	AttachmentTypeCard             = "Card"
-)
-
-var (
-	WebhookBaseURL string = "https://hooks.glip.com/webhook/"
-)
-
 type GlipWebhookClient struct {
 	HttpClient     *http.Client
 	FastClient     fasthttp.Client
@@ -77,7 +62,7 @@ func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
 }
-s*/
+*/
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
 	return client.PostWebhook(client.WebhookUrl, message)
@@ -85,7 +70,11 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
 	if client.webhookVersion == 2 {
-		return client.PostWebhookV2(V1ToV2WewbhookUri(url), webhookBodyV1ToV2(message))
+		v2url, err := V1ToV2WewbhookUri(url)
+		if err != nil {
+			return nil, err
+		}
+		return client.PostWebhookV2(v2url, webhookBodyV1ToV2(message))
 	}
 	msgBytes, err := json.Marshal(message)
 	if err != nil {
@@ -122,7 +111,11 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 	resp := fasthttp.AcquireResponse()
 
 	if client.webhookVersion == 2 {
-		url = V1ToV2WewbhookUri(url)
+		var err error
+		url, err = V1ToV2WewbhookUri(url)
+		if err != nil {
+			return req, resp, err
+		}
 		bytes, err := json.Marshal(webhookBodyV1ToV2(message))
 		if err != nil {
 			return req, resp, err

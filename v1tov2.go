@@ -17,22 +17,29 @@ const (
 var rxGlipWebhookV1 = regexp.MustCompile(rxGlipWebhookV1Pattern)
 var rxGlipWebhookV2 = regexp.MustCompile(rxGlipWebhookV2Pattern)
 
-func V1ToV2WewbhookUri(input string) string {
-	input = strings.TrimSpace(input)
-	if len(input) == 0 {
+func V1ToV2WewbhookUri(input string) (string, error) {
+	gw, err := NewWebhookURL(input)
+	if err != nil {
+		return "", err
+	}
+	return gw.V2URL(), nil
+	/*
+		input = strings.TrimSpace(input)
+		if len(input) == 0 {
+			return input
+		}
+		if strings.Index(input, "/") == -1 {
+			return GlipWebhookV2BaseURLProduction + input
+		}
+		if rxGlipWebhookV2.MatchString(input) {
+			return input
+		}
+		m := rxGlipWebhookV1.FindStringSubmatch(input)
+		if len(m) == 3 {
+			return m[1] + webhookV2Path + m[2]
+		}
 		return input
-	}
-	if strings.Index(input, "/") == -1 {
-		return GlipWebhookBaseURLProductionV2 + input
-	}
-	if rxGlipWebhookV2.MatchString(input) {
-		return input
-	}
-	m := rxGlipWebhookV1.FindStringSubmatch(input)
-	if len(m) == 3 {
-		return m[1] + webhookV2Path + m[2]
-	}
-	return input
+	*/
 }
 
 func V1ToV2WebhookBody(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
@@ -45,7 +52,6 @@ func V1ToV2WebhookBody(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
 	for _, v1att := range v1msg.Attachments {
 		v2msg.Attachments = append(v2msg.Attachments, V1ToV2WebhookAttachment(v1att))
 	}
-
 	return v2msg
 }
 
