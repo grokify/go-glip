@@ -52,8 +52,6 @@ func NewWebhookURL(input string) (WebhookURL, error) {
 	return WebhookURL{
 		webhookId:     input,
 		originalInput: input}, nil
-
-	// return wu, fmt.Errorf("is not Glip webhook URL [%s]", input)
 }
 
 func (w *WebhookURL) IsGUID() bool {
