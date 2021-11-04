@@ -1,0 +1,115 @@
+{
+  "icon": "http://www.bridgethegap.com/wp-content/uploads/2017/02/salesforce-best-practices.png",
+  "title": "**Top Opportunities**",
+  "body": "Full report: https://my.salesforce.com/00O80000007MOgS",
+  "attachments": [
+    {
+      "color": "#00ff2a",
+      "fields": [
+        {
+          "title": "Opportunity",
+          "value": "[Eureka Oil and Gas (0038000001MgG2z)](https://example.com)",
+          "short": true
+        },
+        {
+          "title": "Owner",
+          "value": "Alice Collins",
+          "short": true
+        },
+        {
+          "title": "Stage",
+          "value": "Proposal/Quote",
+          "short": true
+        },
+        {
+          "title": "Close Date",
+          "value": "2017-09-20",
+          "short": true
+        },
+        {
+          "title": "Amount",
+          "value": "$750,000",
+          "short": true
+        },
+        {
+          "title": "Probability",
+          "value": "85%",
+          "short": true
+        }
+      ],
+      "thumbnail_url": "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png"
+    },
+    {
+      "color": "#dfdd13",
+      "fields": [
+        {
+          "title": "Opportunity",
+          "value": "[Pacfic Restaurants (0038000004WhM4a)](https://example.com)",
+          "short": true
+        },
+        {
+          "title": "Owner",
+          "value": "Justin Lyons",
+          "short": true
+        },
+        {
+          "title": "Stage",
+          "value": "Discovery",
+          "short": true
+        },
+        {
+          "title": "Close Date",
+          "value": "2017-09-20",
+          "short": true
+        },
+        {
+          "title": "Amount",
+          "value": "$500,000",
+          "short": true
+        },
+        {
+          "title": "Probability",
+          "value": "70%",
+          "short": true
+        }
+      ],
+      "thumbnail_url": "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png"
+    },
+    {
+      "color": "#ff0000",
+      "fields": [
+        {
+          "title": "Opportunity",
+          "value": "[Electric Company of America (0038000004OrS7y)](https://example.com)",
+          "short": true
+        },
+        {
+          "title": "Owner",
+          "value": "Matthew West",
+          "short": true
+        },
+        {
+          "title": "Stage",
+          "value": "Proposal/Quote",
+          "short": true
+        },
+        {
+          "title": "Close Date",
+          "value": "2017-12-20",
+          "short": true
+        },
+        {
+          "title": "Amount",
+          "value": "$150,000",
+          "short": true
+        },
+        {
+          "title": "Probability",
+          "value": "40%",
+          "short": true
+        }
+      ],
+      "thumbnail_url": "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png"
+    }
+  ]
+}
