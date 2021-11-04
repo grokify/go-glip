@@ -1,5 +1,6 @@
 {
   "icon": "https://i.imgur.com/9yILi61.png",
+  "activity": "Activity of the post ♠♥♣♦",
   "title": "**Title of the post ♠♥♣♦**",
   "body": "Body of the post ♠♥♣♦",
   "attachments": [
@@ -32,7 +33,7 @@
       "thumbnail_url": "https://raw.githubusercontent.com/grokify/go-glip/master/docs/example_thumbnail-url.png",
       "footer": "Attachment footer and timestamp ♠♥♣♦",
       "footer_icon": "https://raw.githubusercontent.com/grokify/go-glip/master/docs/example_footer-icon.png",
-      "ts": 1636048923
+      "ts": 1636056179
     }
   ]
 }

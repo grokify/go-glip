@@ -8,9 +8,10 @@ import (
 
 func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
 	return glipwebhook.GlipWebhookMessage{
-		Icon:  "https://i.imgur.com/9yILi61.png",
-		Title: "**Title of the post ♠♥♣♦**",
-		Body:  "Body of the post ♠♥♣♦",
+		Icon:     "https://i.imgur.com/9yILi61.png",
+		Activity: "Activity of the post ♠♥♣♦",
+		Title:    "**Title of the post ♠♥♣♦**",
+		Body:     "Body of the post ♠♥♣♦",
 		Attachments: []glipwebhook.Attachment{
 			{
 				Title:        "Attachment Title ♠♥♣♦",
