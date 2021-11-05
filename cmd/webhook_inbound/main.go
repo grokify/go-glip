@@ -53,7 +53,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookUrlOrGuid)
+	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookUrlOrGuid, 1)
 	if err != nil {
 		log.Fatal(err)
 	}
