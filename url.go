@@ -20,6 +20,17 @@ type WebhookURL struct {
 	originalInput   string
 }
 
+func MustNewWebhookURLString(input string, webhookVersion int) string {
+	hookURL, err := NewWebhookURL(input)
+	if err != nil {
+		return input
+	}
+	if webhookVersion == 2 {
+		return hookURL.V2URL()
+	}
+	return hookURL.V1URL()
+}
+
 func NewWebhookURL(input string) (WebhookURL, error) {
 	input = strings.TrimSpace(input)
 	wu := WebhookURL{
