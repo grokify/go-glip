@@ -3,13 +3,11 @@ package glip
 import (
 	"encoding/json"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
 	v2 "github.com/grokify/go-glip/v2"
 	"github.com/grokify/simplego/net/httputilmore"
-	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
 )
 
@@ -20,49 +18,28 @@ type GlipWebhookClient struct {
 	webhookVersion int
 }
 
-func newGlipWebhookClientCore(urlOrGuid string) GlipWebhookClient {
-	client := GlipWebhookClient{webhookVersion: 2}
+func newGlipWebhookClientCore(urlOrGuid string, webhookVersion int) GlipWebhookClient {
+	if webhookVersion != 2 {
+		webhookVersion = 1
+	}
+	client := GlipWebhookClient{webhookVersion: webhookVersion}
 	if len(urlOrGuid) > 0 {
-		client.WebhookUrl = client.buildWebhookURL(urlOrGuid)
+		client.WebhookUrl = MustNewWebhookURLString(urlOrGuid, webhookVersion)
 	}
 	return client
 }
 
-func NewGlipWebhookClient(urlOrGuid string) (GlipWebhookClient, error) {
-	client := newGlipWebhookClientCore(urlOrGuid)
+func NewGlipWebhookClient(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
+	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
 	client.HttpClient = httputilmore.NewHttpClient()
 	return client, nil
 }
 
-func NewGlipWebhookClientFast(urlOrGuid string) (GlipWebhookClient, error) {
-	client := newGlipWebhookClientCore(urlOrGuid)
+func NewGlipWebhookClientFast(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
+	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
 	client.FastClient = fasthttp.Client{}
 	return client, nil
 }
-
-func (client *GlipWebhookClient) buildWebhookURL(urlOrUid string) string {
-	rx := regexp.MustCompile(`^https?://`)
-	rs := rx.FindString(urlOrUid)
-	if len(rs) > 0 {
-		log.Debug().
-			Str("lib", "go-glip").
-			Str("request_url_http_match", urlOrUid).
-			Msg("Webhook URL has scheme.")
-		return urlOrUid
-	}
-	return strings.Join([]string{WebhookBaseURL, urlOrUid}, "")
-}
-
-/*
-func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte, error) {
-	resp, err := client.PostMessage(message)
-	if err != nil {
-		return []byte{}, err
-	}
-	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
-}
-*/
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
 	return client.PostWebhook(client.WebhookUrl, message)
@@ -138,7 +115,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 }
 
 func (client *GlipWebhookClient) PostWebhookGUIDFast(guidOrURL string, message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
-	return client.PostWebhookFast(client.buildWebhookURL(guidOrURL), message)
+	return client.PostWebhookFast(MustNewWebhookURLString(guidOrURL, client.webhookVersion), message)
 }
 
 func webhookBodyV1ToV2(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
