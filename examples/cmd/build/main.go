@@ -11,7 +11,6 @@ import (
 
 func main() {
 	exps := examples.ExampleWebhooks()
-	fmt.Printf("%v\n", exps)
 
 	for _, exp := range exps {
 		min, err := json.Marshal(exp.Message)
