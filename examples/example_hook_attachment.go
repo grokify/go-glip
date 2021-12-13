@@ -7,10 +7,11 @@ import (
 )
 
 func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
-	msg := glipwebhook.GlipWebhookMessage{
-		Icon:  "https://i.imgur.com/9yILi61.png",
-		Title: "**Title of the post ♠♥♣♦**",
-		Body:  "Body of the post ♠♥♣♦",
+	return glipwebhook.GlipWebhookMessage{
+		Icon:     "https://i.imgur.com/9yILi61.png",
+		Activity: "Activity of the post ♠♥♣♦",
+		Title:    "**Title of the post ♠♥♣♦**",
+		Body:     "Body of the post ♠♥♣♦",
 		Attachments: []glipwebhook.Attachment{
 			{
 				Title:        "Attachment Title ♠♥♣♦",
@@ -22,7 +23,7 @@ func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
 				Text:         "Attachment text ♠♥♣♦",
 				Pretext:      "Attachment pretext appears before the attachment block ♠♥♣♦",
 				ImageURL:     "https://media3.giphy.com/media/l4FssTixISsPStXRC/giphy.gif",
-				ThumbnailURL: "https://funkybuddhabrewery.com/sites/default/files/WorldBeerCupGold.png",
+				ThumbnailURL: "https://raw.githubusercontent.com/grokify/go-glip/master/docs/example_thumbnail-url.png",
 				Fields: []glipwebhook.Field{
 					{
 						Title: "Field 1 ♠♥♣♦",
@@ -38,16 +39,9 @@ func ExampleHookBodyAttachment() glipwebhook.GlipWebhookMessage {
 						Short: false},
 				},
 				Footer:     "Attachment footer and timestamp ♠♥♣♦",
-				FooterIcon: "http://www.iconsdb.com/icons/preview/red/square-ios-app-xxl.png",
+				FooterIcon: "https://raw.githubusercontent.com/grokify/go-glip/master/docs/example_footer-icon.png",
 				TS:         time.Now().Unix(),
 			},
 		},
 	}
-	if 1 == 0 {
-		msg.Icon = "https://example.com/post_icon.png"
-		msg.Attachments[0].ImageURL = "https://example.com/congrats.gif"
-		msg.Attachments[0].FooterIcon = "https://example.com/footer_icon.png"
-		msg.Attachments[0].AuthorIcon = "https://example.com/author_icon.png"
-	}
-	return msg
 }

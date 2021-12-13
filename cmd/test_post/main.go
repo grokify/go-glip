@@ -21,7 +21,7 @@ func main() {
 	flag.StringVar(&hookUrl, "hookurl", "https://hooks.glip.com/webhook/1111-deadbeef-8888", "Config file path")
 	flag.Parse()
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(hookUrl)
+	client, err := glipwebhook.NewGlipWebhookClientFast(hookUrl, 1)
 
 	if err != nil {
 		log.Fatal(err)

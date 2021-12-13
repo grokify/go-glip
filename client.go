@@ -3,29 +3,12 @@ package glip
 import (
 	"encoding/json"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
 	v2 "github.com/grokify/go-glip/v2"
 	"github.com/grokify/mogo/net/httputilmore"
-	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasthttp"
-)
-
-const (
-	ApiPathGlipFiles               = "/restapi/v1.0/glip/files"
-	ApiPathGlipGroups              = "/restapi/v1.0/glip/groups"
-	ApiPathGlipPosts               = "/restapi/v1.0/glip/posts"
-	GlipWebhookBaseURLProduction   = "https://hooks.glip.com/webhook/"
-	GlipWebhookBaseURLProductionV2 = "https://hooks.glip.com/webhook/v2/"
-	GlipWebhookBaseURLSandbox      = "https://hooks-glip.devtest.ringcentral.com/webhook/"
-	GlipWebhookBaseURLSandboxV2    = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
-	AttachmentTypeCard             = "Card"
-)
-
-var (
-	WebhookBaseURL string = "https://hooks.glip.com/webhook/"
 )
 
 type GlipWebhookClient struct {
@@ -35,49 +18,28 @@ type GlipWebhookClient struct {
 	webhookVersion int
 }
 
-func newGlipWebhookClientCore(urlOrGuid string) GlipWebhookClient {
-	client := GlipWebhookClient{webhookVersion: 2}
+func newGlipWebhookClientCore(urlOrGuid string, webhookVersion int) GlipWebhookClient {
+	if webhookVersion != 2 {
+		webhookVersion = 1
+	}
+	client := GlipWebhookClient{webhookVersion: webhookVersion}
 	if len(urlOrGuid) > 0 {
-		client.WebhookUrl = client.buildWebhookURL(urlOrGuid)
+		client.WebhookUrl = MustNewWebhookURLString(urlOrGuid, webhookVersion)
 	}
 	return client
 }
 
-func NewGlipWebhookClient(urlOrGuid string) (GlipWebhookClient, error) {
-	client := newGlipWebhookClientCore(urlOrGuid)
+func NewGlipWebhookClient(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
+	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
 	client.HttpClient = httputilmore.NewHttpClient()
 	return client, nil
 }
 
-func NewGlipWebhookClientFast(urlOrGuid string) (GlipWebhookClient, error) {
-	client := newGlipWebhookClientCore(urlOrGuid)
+func NewGlipWebhookClientFast(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
+	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
 	client.FastClient = fasthttp.Client{}
 	return client, nil
 }
-
-func (client *GlipWebhookClient) buildWebhookURL(urlOrUid string) string {
-	rx := regexp.MustCompile(`^https?://`)
-	rs := rx.FindString(urlOrUid)
-	if len(rs) > 0 {
-		log.Debug().
-			Str("lib", "go-glip").
-			Str("request_url_http_match", urlOrUid).
-			Msg("Webhook URL has scheme.")
-		return urlOrUid
-	}
-	return strings.Join([]string{WebhookBaseURL, urlOrUid}, "")
-}
-
-/*
-func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte, error) {
-	resp, err := client.PostMessage(message)
-	if err != nil {
-		return []byte{}, err
-	}
-	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
-}
-s*/
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
 	return client.PostWebhook(client.WebhookUrl, message)
@@ -85,7 +47,11 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
 	if client.webhookVersion == 2 {
-		return client.PostWebhookV2(V1ToV2WewbhookUri(url), webhookBodyV1ToV2(message))
+		v2url, err := V1ToV2WewbhookUri(url)
+		if err != nil {
+			return nil, err
+		}
+		return client.PostWebhookV2(v2url, webhookBodyV1ToV2(message))
 	}
 	msgBytes, err := json.Marshal(message)
 	if err != nil {
@@ -122,7 +88,11 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 	resp := fasthttp.AcquireResponse()
 
 	if client.webhookVersion == 2 {
-		url = V1ToV2WewbhookUri(url)
+		var err error
+		url, err = V1ToV2WewbhookUri(url)
+		if err != nil {
+			return req, resp, err
+		}
 		bytes, err := json.Marshal(webhookBodyV1ToV2(message))
 		if err != nil {
 			return req, resp, err
@@ -145,7 +115,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 }
 
 func (client *GlipWebhookClient) PostWebhookGUIDFast(guidOrURL string, message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
-	return client.PostWebhookFast(client.buildWebhookURL(guidOrURL), message)
+	return client.PostWebhookFast(MustNewWebhookURLString(guidOrURL, client.webhookVersion), message)
 }
 
 func webhookBodyV1ToV2(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
@@ -205,52 +175,6 @@ func attachmentV1ToV2(v1att Attachment) v2.Attachment {
 	}
 
 	return v2att
-}
-
-type GlipWebhookMessage struct {
-	Icon           string       `json:"icon,omitempty"`
-	Activity       string       `json:"activity,omitempty"`
-	Title          string       `json:"title,omitempty"`
-	Body           string       `json:"body,omitempty"`
-	AttachmentType string       `json:"attachment_type,omitempty"`
-	Attachments    []Attachment `json:"attachments,omitempty"`
-}
-
-type Attachment struct {
-	Type         string  `json:"card,omitempty"`
-	Color        string  `json:"color,omitempty"`
-	Pretext      string  `json:"pretext,omitempty"`
-	AuthorName   string  `json:"author_name,omitempty"`
-	AuthorLink   string  `json:"author_link,omitempty"`
-	AuthorIcon   string  `json:"author_icon,omitempty"`
-	Title        string  `json:"title,omitempty"`
-	TitleLink    string  `json:"title_link,omitempty"`
-	Fallback     string  `json:"fallback,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
-	Text         string  `json:"text,omitempty"`
-	ImageURL     string  `json:"image_url,omitempty"`
-	ThumbnailURL string  `json:"thumbnail_url,omitempty"`
-	Footer       string  `json:"footer,omitempty"`
-	FooterIcon   string  `json:"footer_icon,omitempty"`
-	TS           int64   `json:"ts,omitempty"`
-}
-
-type Author struct {
-	Name    string `json:"name,omitempty"`
-	URI     string `json:"uri,omitempty"`
-	IconURI string `json:"iconUri,omitempty"`
-}
-
-type Footnote struct {
-	Text    string `json:"text,omitempty"`
-	IconURI string `json:"iconUri,omitempty"`
-}
-
-type Field struct {
-	Title string `json:"title,omitempty"`
-	Value string `json:"value,omitempty"`
-	Short bool   `json:"short,omitempty"`
-	Style string `json:"style,omitempty"`
 }
 
 type GlipWebhookResponse struct {

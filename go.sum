@@ -264,6 +264,7 @@ github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/grokify/base36 v1.0.5/go.mod h1:L+1aaUBGfp5Ctar7KCS5G9uPABo1Ccu1Ct2iQAuhOJ4=
+github.com/grokify/bitcoinmath v0.1.0 h1:NySFRW09cYQlTXrUw6QpjNgtrudC5QlgsqgXWWNN+50=
 github.com/grokify/bitcoinmath v0.1.0/go.mod h1:Y8OyDefB55NHGzi+uJshYmE4Hn5juIQqJahsQJN5o2k=
 github.com/grokify/elastirad-go v0.1.4/go.mod h1:61oQeWCLTV2D6Lj6jKgJprofR7roR9O/rtXgRzoKk+U=
 github.com/grokify/go-ringcentral-client v0.3.2 h1:hkU5KPLoH0zmT1E7IRlUXGRbxmCYmBWrol1fVO9a7uE=
