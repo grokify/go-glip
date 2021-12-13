@@ -17,9 +17,9 @@ import (
 	"github.com/grokify/go-glip"
 	"github.com/grokify/goauth/credentials"
 	ro "github.com/grokify/goauth/ringcentral"
-	"github.com/grokify/simplego/config"
-	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/net/urlutil"
+	"github.com/grokify/mogo/config"
+	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/net/urlutil"
 )
 
 // main finds Glip groups matching the following command:

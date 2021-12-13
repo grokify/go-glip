@@ -8,7 +8,7 @@ import (
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/goauth/credentials"
-	"github.com/grokify/simplego/fmt/fmtutil"
+	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/jessevdk/go-flags"
 
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"

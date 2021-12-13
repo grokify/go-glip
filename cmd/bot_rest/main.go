@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/grokify/goauth"
-	"github.com/grokify/simplego/config"
-	hum "github.com/grokify/simplego/net/httputilmore"
+	"github.com/grokify/mogo/config"
+	"github.com/grokify/mogo/net/httputilmore"
 )
 
 func main() {
@@ -31,6 +31,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	hum.PrintResponse(resp, true)
+	httputilmore.PrintResponse(resp, true)
 	fmt.Println("DONE")
 }

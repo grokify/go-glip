@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/io/ioutilmore"
-	"github.com/grokify/simplego/net/http/httpsimple"
+	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/io/ioutilmore"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/jessevdk/go-flags"
 	"github.com/valyala/fasthttp"
 

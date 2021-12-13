@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 
-	httputil "github.com/grokify/simplego/net/httputilmore"
+	httputil "github.com/grokify/mogo/net/httputilmore"
 )
 
 const (

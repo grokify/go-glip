@@ -7,7 +7,7 @@ import (
 	"os"
 
 	glipwebhook "github.com/grokify/go-glip"
-	"github.com/grokify/simplego/config"
+	"github.com/grokify/mogo/config"
 	"github.com/valyala/fasthttp"
 )
 

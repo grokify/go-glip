@@ -9,8 +9,8 @@ import (
 	"github.com/grokify/go-glip/examples"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	"github.com/grokify/goauth/credentials"
-	"github.com/grokify/simplego/fmt/fmtutil"
-	"github.com/grokify/simplego/net/http/httpsimple"
+	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	"github.com/jessevdk/go-flags"
 	"github.com/rs/zerolog/log"
 )
