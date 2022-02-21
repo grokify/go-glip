@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/caarlos0/env"
+	"github.com/caarlos0/env/v6"
 	rc "github.com/grokify/go-ringcentral-client/office/v1/client"
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/goauth"
