@@ -39,7 +39,7 @@ func main() {
 	fmt.Printf("FILE %v\n", filepath)
 
 	httpClient, err := ro.NewClientPassword(
-		credentials.NewOAuth2CredentialsEnv("RINGCENTRAL_"))
+		credentials.NewCredentialsOAuth2Env("RINGCENTRAL_"))
 	if err != nil {
 		panic(err)
 	}
