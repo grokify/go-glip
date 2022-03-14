@@ -31,7 +31,7 @@ func newGlipWebhookClientCore(urlOrGuid string, webhookVersion int) GlipWebhookC
 
 func NewGlipWebhookClient(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
 	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
-	client.HttpClient = httputilmore.NewHttpClient()
+	client.HttpClient = httputilmore.NewHTTPClient()
 	return client, nil
 }
 
@@ -108,7 +108,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 
 	req.Header.SetRequestURI(url)
 	req.Header.SetMethod(http.MethodPost)
-	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJsonUtf8)
+	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJSONUtf8)
 
 	err := client.FastClient.Do(req, resp)
 	return req, resp, err

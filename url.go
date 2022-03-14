@@ -49,7 +49,7 @@ func NewWebhookURL(input string) (WebhookURL, error) {
 		wu.originalVersion = 1
 		return wu, nil
 	}
-	if urlutil.IsHttp(input, true, true) {
+	if urlutil.IsHTTP(input, true, true) {
 		return wu, fmt.Errorf("is not Glip webhook URL [%s]", input)
 	}
 
@@ -66,7 +66,7 @@ func NewWebhookURL(input string) (WebhookURL, error) {
 }
 
 func (w *WebhookURL) IsGUID() bool {
-	return guid.ValidGuidHex(w.webhookId)
+	return guid.ValidGUIDHex(w.webhookId)
 }
 
 func (w *WebhookURL) V1URL() string {

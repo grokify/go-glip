@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 
-	httputil "github.com/grokify/mogo/net/httputilmore"
+	"github.com/grokify/mogo/net/httputilmore"
 )
 
 const (
@@ -17,31 +17,31 @@ const (
 )
 
 type GlipWebhookClient struct {
-	HttpClient *http.Client
-	WebhookUrl string
+	HTTPClient *http.Client
+	WebhookURL string
 }
 
-func NewGlipWebhookClient(urlOrGuid string) (GlipWebhookClient, error) {
+func NewGlipWebhookClient(urlOrGUID string) (GlipWebhookClient, error) {
 	client := GlipWebhookClient{}
-	url, err := client.BuildWebhookURL(urlOrGuid)
+	url, err := client.BuildWebhookURL(urlOrGUID)
 	if err != nil {
 		return client, err
 	}
-	client.WebhookUrl = url
-	client.HttpClient = httputil.NewHttpClient()
+	client.WebhookURL = url
+	client.HTTPClient = httputilmore.NewHTTPClient()
 	return client, nil
 }
 
-func (client *GlipWebhookClient) BuildWebhookURL(urlOrGuid string) (string, error) {
-	if len(urlOrGuid) < 36 {
-		return "", errors.New("Webhook GUID or URL is required.")
+func (client *GlipWebhookClient) BuildWebhookURL(urlOrGUID string) (string, error) {
+	if len(urlOrGUID) < 36 {
+		return "", errors.New("webhook GUID or URL is required.")
 	}
 	rx := regexp.MustCompile(`^[0-9A-Za-z-]+$`)
-	match := rx.FindString(urlOrGuid)
+	match := rx.FindString(urlOrGUID)
 	if len(match) > 0 {
-		return fmt.Sprintf("%v%v", GLIP_WEBHOOK_BASE_URL, urlOrGuid), nil
+		return fmt.Sprintf("%v%v", GLIP_WEBHOOK_BASE_URL, urlOrGUID), nil
 	}
-	return urlOrGuid, nil
+	return urlOrGUID, nil
 }
 
 func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte, error) {
@@ -58,16 +58,16 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 	if err != nil {
 		return &http.Response{}, err
 	}
-	return client.PostJSON(client.WebhookUrl, messageBytes)
+	return client.PostJSON(client.WebhookURL, messageBytes)
 }
 
 func (client *GlipWebhookClient) PostJSON(url string, bodyBytes []byte) (*http.Response, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyBytes))
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(bodyBytes))
 	if err != nil {
 		return &http.Response{}, err
 	}
-	req.Header.Set("Content-Type", "application/json")
-	httpClient := httputil.NewHttpClient()
+	req.Header.Set(httputilmore.HeaderContentType, httputilmore.ContentTypeAppJSONUtf8)
+	httpClient := httputilmore.NewHTTPClient()
 	return httpClient.Do(req)
 }
 
