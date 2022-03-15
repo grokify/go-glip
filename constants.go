@@ -9,6 +9,7 @@ const (
 	GlipWebhookV1BaseURLSandbox    = "https://hooks-glip.devtest.ringcentral.com/webhook/"
 	GlipWebhookV2BaseURLSandbox    = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
 	AttachmentTypeCard             = "Card"
+	HeaderValidationToken          = "Validation-Token"
 )
 
 var (

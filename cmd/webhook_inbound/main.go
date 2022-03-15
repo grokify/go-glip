@@ -34,36 +34,32 @@ type cliOptions struct {
 	Data             string `short:"d" long:"data" description:"JSON to use for body"`
 }
 
-func getBodyBytes(webhookUrlOrGuid string, body []byte) {
+func getBodyBytes(webhookUrlOrGuid string, body []byte) error {
 	resp, err := httpsimple.Do(httpsimple.SimpleRequest{
 		Method: http.MethodPost,
 		URL:    webhookUrlOrGuid,
 		Body:   body,
 		IsJSON: true})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Printf("STATUS [%d]\n", resp.StatusCode)
 	fmt.Println(string(ioutilmore.ReadAllOrError(resp.Body)))
+	return nil
 }
 
 func main() {
 	opts := cliOptions{}
 	_, err := flags.Parse(&opts)
-	if err != nil {
-		log.Fatal(err)
-	}
+	logutil.FatalErr(err)
 
 	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookUrlOrGuid, 1)
-	if err != nil {
-		log.Fatal(err)
-	}
+	logutil.FatalErr(err)
 
 	if len(strings.TrimSpace(opts.File)) > 0 {
 		bytes, err := os.ReadFile(opts.File)
-		if err != nil {
-			log.Fatal(err)
-		}
+		logutil.FatalErr(err)
+
 		getBodyBytes(opts.WebhookUrlOrGuid, bytes)
 	} else if len(strings.TrimSpace(opts.Data)) > 0 {
 		getBodyBytes(opts.WebhookUrlOrGuid, []byte(opts.Data))
@@ -88,7 +84,8 @@ func main() {
 		}
 
 		logutil.FatalErr(fmtutil.PrintJSON(msgs))
-		fmt.Printf("NUM_MSGS [%v]\n", len(msgs))
+		_, err := fmt.Printf("NUM_MSGS [%v]\n", len(msgs))
+		logutil.FatalErr(err)
 
 		for _, msg := range msgs {
 			req, resp, err := client.PostMessageFast(msg)

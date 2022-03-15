@@ -13,12 +13,14 @@ import (
 	"time"
 
 	"github.com/caarlos0/env/v6"
+	"github.com/grokify/go-glip"
 	rc "github.com/grokify/go-ringcentral-client/office/v1/client"
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/goauth"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/log/logutil"
 	"github.com/rs/zerolog/log"
 )
 
@@ -63,7 +65,7 @@ type GlipEventMention struct {
 }
 
 func WebhookHandler(res http.ResponseWriter, req *http.Request) {
-	vtHeader := "Validation-Token"
+	vtHeader := glip.HeaderValidationToken
 	vt := req.Header.Get(vtHeader)
 	if len(strings.TrimSpace(vt)) > 0 {
 		res.Header().Set(vtHeader, vt)
@@ -72,15 +74,11 @@ func WebhookHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		log.Fatal().Err(err)
-	}
+	logutil.FatalErr(err)
 
 	evt := &GenericEvent{}
 	err = json.Unmarshal(body, evt)
-	if err != nil {
-		log.Fatal().Err(err)
-	}
+	logutil.FatalErr(err)
 
 	subFmt := "/restapi/v1.0/subscription/.*threshold"
 	rx := regexp.MustCompile(subFmt)
@@ -117,7 +115,7 @@ func createWebhook(webhookURL string) error {
 	log.Info().Msg("Creating Hook...")
 	apiClient, err := getRingCentralAPIClient()
 	if err != nil {
-		log.Fatal().Err(err)
+		return err
 	}
 
 	req := rc.CreateSubscriptionRequest{
@@ -145,8 +143,7 @@ func createWebhook(webhookURL string) error {
 			Int("status", resp.StatusCode).
 			Msg("bad_status")
 	}
-	fmtutil.PrintJSON(info)
-	return nil
+	return fmtutil.PrintJSON(info)
 }
 
 func main() {
@@ -155,15 +152,11 @@ func main() {
 	flag.Parse()
 
 	err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
-	if err != nil {
-		panic(err)
-	}
+	logutil.FatalErr(err)
 
 	appCfg := RingCentralConfig{}
 	err = env.Parse(&appCfg)
-	if err != nil {
-		log.Fatal().Err(err)
-	}
+	logutil.FatalErr(err)
 
 	if len(webhookURL) == 0 {
 		webhookURL = appCfg.WebhookURL

@@ -9,6 +9,7 @@ import (
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/log/logutil"
 	"github.com/jessevdk/go-flags"
 
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
@@ -26,15 +27,12 @@ type Options struct {
 func main() {
 	opts := Options{}
 	_, err := flags.Parse(&opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmtutil.PrintJSON(opts)
+	logutil.FatalErr(err)
+
+	fmtutil.MustPrintJSON(opts)
 
 	creds, err := credentials.ReadCredentialsFromFile(opts.CredsPath, opts.Account, true)
-	if err != nil {
-		log.Fatal(err)
-	}
+	logutil.FatalErr(err)
 
 	var httpClient *http.Client
 
@@ -43,10 +41,7 @@ func main() {
 	} else {
 		httpClient, err = creds.NewClient(context.Background())
 	}
-	if err != nil {
-		log.Fatal(err)
-		panic("failed")
-	}
+	logutil.FatalErr(err)
 
 	serverURL := "https://platform.ringcentral.com"
 
@@ -57,29 +52,28 @@ func main() {
 	}
 
 	set, err := glipgroups.NewGroupsSetApiRequest(httpClient, serverURL, "Team")
-	if err != nil {
-		log.Fatal(err)
-	}
+	logutil.FatalErr(err)
+
 	log.Printf("Searching %v Teams\n", len(set.GroupsMap))
 
 	for _, g := range opts.Groups {
 		groups := set.FindGroupsByName(g)
 
-		fmtutil.PrintJSON(groups)
+		fmtutil.MustPrintJSON(groups)
 
 		if len(opts.LoadUsers) > 0 {
 			for _, group := range groups {
 				memberCount := len(group.Members)
-				for i, memberId := range group.Members {
+				for i, memberID := range group.Members {
 					n := i + 1
-					fmt.Printf("[%v/%v] %v", n, memberCount, memberId)
-					info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberId)
+					fmt.Printf("[%v/%v] %v", n, memberCount, memberID)
+					info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberID)
 					if err != nil {
 						log.Fatal(fmt.Sprintf("API ERR: %v\n", err))
 					} else if resp.StatusCode >= 300 {
 						log.Fatal(fmt.Sprintf("API RESP %v\n", resp.StatusCode))
 					}
-					fmtutil.PrintJSON(info)
+					fmtutil.MustPrintJSON(info)
 				}
 			}
 		}
@@ -89,9 +83,8 @@ func main() {
 				set, err := mergedusers.NewMergedUsersApiIds(httpClient,
 					serverURL,
 					group.Members)
-				if err != nil {
-					log.Fatal(err)
-				}
+				logutil.FatalErr(err)
+
 				//fmtutil.PrintJSON(set)
 				for id, user := range set.MergedUserMap {
 					thin := user.ToMergedUserThin()
@@ -99,13 +92,13 @@ func main() {
 						user.GlipPersonInfo.FirstName,
 						user.GlipPersonInfo.LastName,
 						thin.DisplayNumber)
-					fmtutil.PrintJSON(thin)
+					fmtutil.MustPrintJSON(thin)
 				}
 				if 1 == 0 {
 					fmtutil.PrintJSON(set.MergedUserMap["557601020"])
 					user := set.MergedUserMap["557601020"]
 					thin := user.ToMergedUserThin()
-					fmtutil.PrintJSON(thin)
+					fmtutil.MustPrintJSON(thin)
 				}
 				fmt.Printf("NUM_USERS [%v]\n", len(set.MergedUserMap))
 				break
