@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -20,7 +21,7 @@ import (
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
 	"github.com/jessevdk/go-flags"
-	"github.com/rs/zerolog/log"
+	//	"github.com/rs/zerolog/log"
 )
 
 type RingCentralConfig struct {
@@ -60,9 +61,7 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	//log.Info(jsonutil.MustMarshalString(req, true))
 	//fmt.Println(string(body))
 
-	log.Info().
-		Str("body", string(body)).
-		Msg("hook-body")
+	log.Printf("hook body [%s]", string(body))
 }
 
 func getRingCentralAPIClient() (*rc.APIClient, error) {
@@ -81,7 +80,7 @@ func getRingCentralAPIClient() (*rc.APIClient, error) {
 }
 
 func createWebhook(rcAPIClient *rc.APIClient, webhookURL string) error {
-	log.Info().Msg("Creating Hook...")
+	log.Print("Creating Hook...")
 
 	req := rc.CreateSubscriptionRequest{
 		EventFilters: []string{
@@ -95,18 +94,16 @@ func createWebhook(rcAPIClient *rc.APIClient, webhookURL string) error {
 		},
 		//ExpiresIn: int32(ExpiresIn),
 	}
-	log.Info().Msg(jsonutil.MustMarshalString(req, true))
+	log.Print(jsonutil.MustMarshalString(req, true))
 
 	info, resp, err := rcAPIClient.PushNotificationsApi.CreateSubscription(
 		context.Background(),
 		req,
 	)
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Fatal(err)
 	} else if resp.StatusCode >= 300 {
-		log.Fatal().
-			Int("status", resp.StatusCode).
-			Msg("bad_status")
+		log.Fatalf("bad_status [%d]", resp.StatusCode)
 	}
 	return fmtutil.PrintJSON(info)
 }
@@ -135,7 +132,12 @@ func main() {
 	http.HandleFunc("/webhook", WebhookHandler)
 
 	done := make(chan bool)
-	go http.ListenAndServe(fmt.Sprintf(":%v", appCfg.AppPort), nil)
+	go func() {
+		if err := http.ListenAndServe(fmt.Sprintf(":%v", appCfg.AppPort), nil); err != nil &&
+			err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
 	log.Printf("Server started at port %v", appCfg.AppPort)
 	//time.Sleep(3 * time.Second)
 	if len(opts.CreateWebhook) > 0 {
