@@ -2,18 +2,17 @@ package glip
 
 import (
 	"fmt"
-	"mime"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
-	"regexp"
 
+	"github.com/grokify/mogo/mime/mimeutil"
 	"github.com/grokify/mogo/net/httputilmore"
 	"github.com/grokify/mogo/net/urlutil"
 )
 
-func PostFile(client *http.Client, serverURL, groupID string, path string) (*http.Response, error) {
+func PostFile(client *http.Client, serverURL, groupID, path string) (*http.Response, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -36,12 +35,10 @@ func PostFile(client *http.Client, serverURL, groupID string, path string) (*htt
 		return nil, err
 	}
 
-	rs := regexp.MustCompile(`(.[^.]+)$`).FindStringSubmatch(path)
-	if len(rs) < 2 {
-		return nil, err
-	}
-	req.Header.Add(httputilmore.HeaderContentType, mime.TypeByExtension(rs[1]))
-	req.Header.Add(httputilmore.HeaderContentDisposition, fmt.Sprintf(`attachment; filename="%s"`, filename))
+	req.Header.Add(httputilmore.HeaderContentType,
+		mimeutil.MustTypeByFile(path, true))
+	req.Header.Add(httputilmore.HeaderContentDisposition,
+		fmt.Sprintf(`attachment; filename="%s"`, filename))
 
 	return client.Do(req)
 }
