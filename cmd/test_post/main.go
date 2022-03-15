@@ -17,11 +17,11 @@ func main() {
 		panic(err)
 	}
 
-	var hookUrl string
-	flag.StringVar(&hookUrl, "hookurl", "https://hooks.glip.com/webhook/1111-deadbeef-8888", "Config file path")
+	var hookURL string
+	flag.StringVar(&hookURL, "hookurl", "https://hooks.glip.com/webhook/1111-deadbeef-8888", "Config file path")
 	flag.Parse()
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(hookUrl, 1)
+	client, err := glipwebhook.NewGlipWebhookClientFast(hookURL, 1)
 
 	if err != nil {
 		log.Fatal(err)

@@ -28,16 +28,16 @@ const (
 )
 
 type cliOptions struct {
-	WebhookUrlOrGuid string `short:"u" long:"url" description:"URL or GUID for Webhook" required:"true"`
+	WebhookURLOrGUID string `short:"u" long:"url" description:"URL or GUID for Webhook" required:"true"`
 	Type             string `short:"t" long:"type" description:"Type [simple,attachment,salesforce,alert]"`
 	File             string `short:"f" long:"file" description:"File containing JSON to use for body"`
 	Data             string `short:"d" long:"data" description:"JSON to use for body"`
 }
 
-func getBodyBytes(webhookUrlOrGuid string, body []byte) error {
+func getBodyBytes(webhookURLOrGUID string, body []byte) error {
 	resp, err := httpsimple.Do(httpsimple.SimpleRequest{
 		Method: http.MethodPost,
-		URL:    webhookUrlOrGuid,
+		URL:    webhookURLOrGUID,
 		Body:   body,
 		IsJSON: true})
 	if err != nil {
@@ -53,18 +53,18 @@ func main() {
 	_, err := flags.Parse(&opts)
 	logutil.FatalErr(err)
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookUrlOrGuid, 1)
+	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookURLOrGUID, 1)
 	logutil.FatalErr(err)
 
 	if len(strings.TrimSpace(opts.File)) > 0 {
 		bytes, err := os.ReadFile(opts.File)
 		logutil.FatalErr(err)
 
-		logutil.FatalErr(getBodyBytes(opts.WebhookUrlOrGuid, bytes))
+		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID, bytes))
 	} else if len(strings.TrimSpace(opts.Data)) > 0 {
-		logutil.FatalErr(getBodyBytes(opts.WebhookUrlOrGuid, []byte(opts.Data)))
+		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID, []byte(opts.Data)))
 	} else if opts.Type == ExampleTypeCard {
-		logutil.FatalErr(getBodyBytes(opts.WebhookUrlOrGuid,
+		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID,
 			examples.ExampleHookBodyCardBytes()))
 	} else {
 		msgs := []glipwebhook.GlipWebhookMessage{}
