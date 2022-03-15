@@ -70,7 +70,7 @@ func V1ToV2WebhookAttachment(v1att Attachment) v2.Attachment {
 	if len(v1att.AuthorName) > 0 {
 		v2att.Author = &v2.Author{
 			Name:    v1att.AuthorName,
-			IconUri: v1att.AuthorIcon,
+			IconURI: v1att.AuthorIcon,
 			URI:     v1att.AuthorLink}
 	}
 	if len(strings.TrimSpace(v1att.FooterIcon)) > 0 || len(strings.TrimSpace(v1att.Footer)) > 0 {

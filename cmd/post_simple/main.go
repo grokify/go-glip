@@ -75,10 +75,10 @@ func main() {
 			Msg("cannot create simpleclient")
 	}
 
-	postUrl := fmt.Sprintf("/restapi/v1.0/glip/chats/%s/adaptive-cards", group.ID)
+	postURL := fmt.Sprintf("/restapi/v1.0/glip/chats/%s/adaptive-cards", group.ID)
 	sreq := httpsimple.SimpleRequest{
 		Method: http.MethodPost,
-		URL:    postUrl,
+		URL:    postURL,
 		Body:   examples.ExamplePostBodyCardBytes(),
 		IsJSON: true}
 	resp, err := sclient.Do(sreq)
@@ -88,7 +88,7 @@ func main() {
 		body, err := io.ReadAll(resp.Body)
 		log.Fatal().
 			Err(err).
-			Str("url", postUrl).
+			Str("url", postURL).
 			Str("body", string(body)).
 			Int("statusCode", resp.StatusCode).
 			Msg("post request with bad statusCode")

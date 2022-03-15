@@ -42,7 +42,7 @@ type Attachment struct {
 
 type Author struct {
 	Name    string `json:"name,omitempty"`
-	IconUri string `json:"iconUri,omitempty"`
+	IconURI string `json:"iconUri,omitempty"`
 	URI     string `json:"uri,omitempty"`
 }
 
@@ -67,7 +67,7 @@ type GlipWebhookResponse struct {
 type GlipWebhookError struct {
 	Code           string                   `json:"code,omitempty"`
 	Message        string                   `json:"message,omitempty"`
-	HttpStatusCode int                      `json:"http_status_code,omitempty"`
+	HTTPStatusCode int                      `json:"http_status_code,omitempty"`
 	ResponseData   string                   `json:"response_data,omitempty"`
 	Response       GlipWebhookErrorResponse `json:"response,omitempty"`
 }
