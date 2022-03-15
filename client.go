@@ -13,7 +13,7 @@ import (
 
 type GlipWebhookClient struct {
 	HTTPClient     *http.Client
-	FastClient     fasthttp.Client
+	FastClient     *fasthttp.Client
 	WebhookURL     string
 	webhookVersion int
 }
@@ -37,7 +37,7 @@ func NewGlipWebhookClient(urlOrGUID string, webhookVersion int) GlipWebhookClien
 
 func NewGlipWebhookClientFast(urlOrGUID string, webhookVersion int) GlipWebhookClient {
 	client := newGlipWebhookClientCore(urlOrGUID, webhookVersion)
-	client.FastClient = fasthttp.Client{}
+	client.FastClient = &fasthttp.Client{}
 	return client
 }
 
