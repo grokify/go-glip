@@ -47,7 +47,7 @@ func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
 	if client.webhookVersion == 2 {
-		v2url, err := V1ToV2WewbhookUri(url)
+		v2url, err := V1ToV2WewbhookURI(url)
 		if err != nil {
 			return nil, err
 		}
@@ -89,7 +89,7 @@ func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhook
 
 	if client.webhookVersion == 2 {
 		var err error
-		url, err = V1ToV2WewbhookUri(url)
+		url, err = V1ToV2WewbhookURI(url)
 		if err != nil {
 			return req, resp, err
 		}
@@ -121,7 +121,7 @@ func (client *GlipWebhookClient) PostWebhookGUIDFast(guidOrURL string, message G
 func webhookBodyV1ToV2(v1msg GlipWebhookMessage) v2.GlipWebhookMessage {
 	v2msg := v2.GlipWebhookMessage{
 		Activity:    v1msg.Activity,
-		IconUri:     v1msg.Icon,
+		IconURI:     v1msg.Icon,
 		Text:        v1msg.Body,
 		Title:       v1msg.Title,
 		Attachments: []v2.Attachment{}}
@@ -136,10 +136,10 @@ func attachmentV1ToV2(v1att Attachment) v2.Attachment {
 	v2att := v2.Attachment{
 		Color:        v1att.Color,
 		Fields:       []v2.Field{},
-		ImageUri:     v1att.ImageURL,
+		ImageURI:     v1att.ImageURL,
 		Intro:        v1att.Pretext,
 		Text:         v1att.Text,
-		ThumbnailUri: v1att.ThumbnailURL,
+		ThumbnailURI: v1att.ThumbnailURL,
 		Title:        v1att.Title,
 		Type:         v1att.Type,
 	}
@@ -150,11 +150,11 @@ func attachmentV1ToV2(v1att Attachment) v2.Attachment {
 		v2att.Author = &v2.Author{
 			Name:    v1att.AuthorName,
 			IconUri: v1att.AuthorIcon,
-			Uri:     v1att.AuthorLink}
+			URI:     v1att.AuthorLink}
 	}
 	if len(strings.TrimSpace(v1att.FooterIcon)) > 0 || len(strings.TrimSpace(v1att.Footer)) > 0 {
 		v2att.Footnote = &v2.Footnote{
-			IconUri: v1att.FooterIcon,
+			IconURI: v1att.FooterIcon,
 			Text:    v1att.Footer,
 		}
 		if v1att.TS > 0 {

@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	GLIP_WEBHOOK_BASE_URL = "https://hooks.glip.com/webhook/"
+	GlipWebhookBaseURL = "https://hooks.glip.com/webhook/"
 )
 
 type GlipWebhookClient struct {
@@ -34,12 +34,12 @@ func NewGlipWebhookClient(urlOrGUID string) (GlipWebhookClient, error) {
 
 func (client *GlipWebhookClient) BuildWebhookURL(urlOrGUID string) (string, error) {
 	if len(urlOrGUID) < 36 {
-		return "", errors.New("webhook GUID or URL is required.")
+		return "", errors.New("webhook GUID or URL is required")
 	}
 	rx := regexp.MustCompile(`^[0-9A-Za-z-]+$`)
 	match := rx.FindString(urlOrGUID)
 	if len(match) > 0 {
-		return fmt.Sprintf("%v%v", GLIP_WEBHOOK_BASE_URL, urlOrGUID), nil
+		return fmt.Sprintf("%v%v", GlipWebhookBaseURL, urlOrGUID), nil
 	}
 	return urlOrGUID, nil
 }
@@ -87,7 +87,7 @@ type GlipWebhookResponse struct {
 type GlipWebhookError struct {
 	Code           string                   `json:"code,omitempty"`
 	Message        string                   `json:"message,omitempty"`
-	HttpStatusCode int                      `json:"http_status_code,omitempty"`
+	HTTPStatusCode int                      `json:"http_status_code,omitempty"`
 	ResponseData   string                   `json:"response_data,omitempty"`
 	Response       GlipWebhookErrorResponse `json:"response,omitempty"`
 }

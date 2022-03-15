@@ -15,7 +15,7 @@ const (
 )
 
 type WebhookURL struct {
-	webhookId       string
+	webhookID       string
 	originalVersion int
 	originalInput   string
 }
@@ -38,14 +38,14 @@ func NewWebhookURL(input string) (WebhookURL, error) {
 	r1 := regexp.MustCompile(rxGlipWebhookV2CaptureFmt)
 	m1 := r1.FindStringSubmatch(input)
 	if len(m1) > 0 {
-		wu.webhookId = m1[1]
+		wu.webhookID = m1[1]
 		wu.originalVersion = 2
 		return wu, nil
 	}
 	r2 := regexp.MustCompile(rxGlipWebhookV1CaptureFmt)
 	m2 := r2.FindStringSubmatch(input)
 	if len(m2) > 0 {
-		wu.webhookId = m2[1]
+		wu.webhookID = m2[1]
 		wu.originalVersion = 1
 		return wu, nil
 	}
@@ -61,20 +61,20 @@ func NewWebhookURL(input string) (WebhookURL, error) {
 	}
 
 	return WebhookURL{
-		webhookId:     input,
+		webhookID:     input,
 		originalInput: input}, nil
 }
 
 func (w *WebhookURL) IsGUID() bool {
-	return guid.ValidGUIDHex(w.webhookId)
+	return guid.ValidGUIDHex(w.webhookID)
 }
 
 func (w *WebhookURL) V1URL() string {
-	return GlipWebhookV1BaseURLProduction + w.webhookId
+	return GlipWebhookV1BaseURLProduction + w.webhookID
 }
 
 func (w *WebhookURL) V2URL() string {
-	return GlipWebhookV2BaseURLProduction + w.webhookId
+	return GlipWebhookV2BaseURLProduction + w.webhookID
 }
 
 func (w *WebhookURL) OriginalInput() string {
@@ -85,6 +85,6 @@ func (w *WebhookURL) OriginalVersion() int {
 	return w.originalVersion
 }
 
-func (w *WebhookURL) Id() string {
-	return w.webhookId
+func (w *WebhookURL) ID() string {
+	return w.webhookID
 }

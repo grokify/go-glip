@@ -16,7 +16,7 @@ const (
 type GlipWebhookMessage struct {
 	Activity    string       `json:"activity,omitempty"`
 	IconEmoji   string       `json:"iconEmoji,omitempty"`
-	IconUri     string       `json:"iconUri,omitempty"`
+	IconURI     string       `json:"iconUri,omitempty"`
 	Text        string       `json:"text,omitempty"`
 	Title       string       `json:"title,omitempty"`
 	Attachments []Attachment `json:"attachments,omitempty"`
@@ -32,10 +32,10 @@ type Attachment struct {
 	Fallback     string    `json:"fallback,omitempty"`
 	Fields       []Field   `json:"fields,omitempty"`
 	Footnote     *Footnote `json:"footnote,omitempty"`
-	ImageUri     string    `json:"imageUri,omitempty"`
+	ImageURI     string    `json:"imageUri,omitempty"`
 	Intro        string    `json:"intro,omitempty"`
 	Text         string    `json:"text,omitempty"`
-	ThumbnailUri string    `json:"thumbnailUri,omitempty"`
+	ThumbnailURI string    `json:"thumbnailUri,omitempty"`
 	Title        string    `json:"title,omitempty"`
 	Type         string    `json:"type,omitempty"`
 }
@@ -43,7 +43,7 @@ type Attachment struct {
 type Author struct {
 	Name    string `json:"name,omitempty"`
 	IconUri string `json:"iconUri,omitempty"`
-	Uri     string `json:"uri,omitempty"`
+	URI     string `json:"uri,omitempty"`
 }
 
 type Field struct {
@@ -53,7 +53,7 @@ type Field struct {
 }
 
 type Footnote struct {
-	IconUri string    `json:"iconUri,omitempty"`
+	IconURI string    `json:"iconUri,omitempty"`
 	Text    string    `json:"text,omitempty"`
 	Time    time.Time `json:"time,omitempty"`
 }

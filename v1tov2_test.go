@@ -17,7 +17,7 @@ var v1ToV2WewbhookUriTests = []struct {
 
 func TestV1ToV2WewbhookUri(t *testing.T) {
 	for _, tt := range v1ToV2WewbhookUriTests {
-		got, err := V1ToV2WewbhookUri(tt.input)
+		got, err := V1ToV2WewbhookURI(tt.input)
 		if err != nil {
 			t.Errorf("glipwebhook.V1ToV2WewbhookUri(\"%s\") Error [%s]", tt.input, err.Error())
 		}
