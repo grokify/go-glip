@@ -10,7 +10,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/grokify/go-glip"
@@ -29,62 +28,32 @@ type RingCentralConfig struct {
 	AppPort    int64  `env:"PORT"`
 }
 
-type GenericEvent struct {
-	UUID           string    `json:"uuid,omitempty"`
-	Event          string    `json:"event,omitempty"`
-	Timestamp      time.Time `json:"timestamp,omitempty"`
-	SubscriptionId string    `json:"subscriptionId,omitempty"`
-	OwnerId        string    `json:"ownerId,omitempty"`
-}
-
-type GlipEvent struct {
-	UUID           string          `json:"uuid,omitempty"`
-	Event          string          `json:"event,omitempty"`
-	Timestamp      time.Time       `json:"timestamp,omitempty"`
-	SubscriptionId string          `json:"subscriptionId,omitempty"`
-	OwnerId        string          `json:"ownerId,omitempty"`
-	Body           TextMessageBody `json:"body,omitempty"`
-}
-
-type TextMessageBody struct {
-	Id               string             `json:"id,omitempty"`
-	GroupId          string             `json:"groupId,omitempty"`
-	Type             string             `json:"type,omitempty"`
-	Text             string             `json:"text,omitempty"`
-	CreatorId        string             `json:"creatorId,omitempty"`
-	CreationTime     time.Time          `json:"creationTime,omitempty"`
-	LastModifiedTime time.Time          `json:"lastModifiedTime,omitempty"`
-	Mentions         []GlipEventMention `json:"mentions,omitempty"`
-	EventType        string             `json:"eventType,omitempty"`
-}
-
-type GlipEventMention struct {
-	Id   string `json:"id,omitempty"`
-	Type string `json:"type,omitempty"`
-	Name string `json:"name,omitempty"`
-}
-
-func WebhookHandler(res http.ResponseWriter, req *http.Request) {
-	vtHeader := glip.HeaderValidationToken
-	vt := req.Header.Get(vtHeader)
+func WebhookHandler(w http.ResponseWriter, r *http.Request) {
+	vt := r.Header.Get(glip.HeaderValidationToken)
 	if len(strings.TrimSpace(vt)) > 0 {
-		res.Header().Set(vtHeader, vt)
-		fmt.Printf("VALIDATION-TOKEN: %v", vt)
+		w.Header().Set(glip.HeaderValidationToken, vt)
+		fmt.Printf("%s: %v", glip.HeaderValidationToken, vt)
 		return
 	}
 
-	body, err := ioutil.ReadAll(req.Body)
-	logutil.FatalErr(err)
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	evt := &GenericEvent{}
+	evt := &glip.GenericEvent{}
 	err = json.Unmarshal(body, evt)
-	logutil.FatalErr(err)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	subFmt := "/restapi/v1.0/subscription/.*threshold"
 	rx := regexp.MustCompile(subFmt)
 	m := rx.FindString(subFmt)
 	if len(m) > 0 {
-		//renew()
+		// renew()
 		return
 	}
 
