@@ -6,12 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"mime"
 	"net/http"
 	"net/url"
 	"os"
-	"regexp"
-	"strings"
 	"time"
 
 	"github.com/grokify/go-glip"
@@ -20,7 +17,6 @@ import (
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
-	"github.com/grokify/mogo/net/urlutil"
 )
 
 // main finds Glip groups matching the following command:
@@ -46,68 +42,29 @@ func main() {
 	}
 
 	set, err := getGroupsSet(httpClient, "Team")
-	if err != nil {
-		panic(err)
-	}
+	logutil.FatalErr(err)
 
 	log.Printf("Searching %v Teams for %v\n", len(set.GroupsMap), wantGroupName)
 
 	groups := set.FindGroupsByName(wantGroupName)
-
-	logutil.FatalErr(fmtutil.PrintJSON(groups))
+	fmtutil.MustPrintJSON(groups)
 
 	for i, group := range groups {
 		log.Printf("%d) %v %v\n", i, group.ID, group.Name)
-		if 1 == 1 {
-			resp, err := postFile(httpClient, group.ID, filepath)
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("Status %v\n", resp.StatusCode)
-			bytes, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("%v\n", string(bytes))
-		}
+
+		resp, err := glip.PostFile(httpClient,
+			os.Getenv("RINGCENTRAL_SERVER_URL"),
+			group.ID, filepath)
+		logutil.FatalErr(err)
+
+		log.Printf("Status %v\n", resp.StatusCode)
+		bytes, err := ioutil.ReadAll(resp.Body)
+		logutil.FatalErr(err)
+
+		log.Printf("%v\n", string(bytes))
 	}
 
 	log.Println("DONE")
-}
-
-func postFile(client *http.Client, groupId string, filepath string) (*http.Response, error) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		return &http.Response{}, err
-	}
-
-	filepathParts := strings.Split(filepath, "/")
-	filename := filepathParts[len(filepathParts)-1]
-
-	query := url.Values{}
-	query.Add("groupId", groupId)
-	query.Add("name", filename)
-
-	uploadURL, err := urlutil.URLAddQueryValuesString(
-		urlutil.JoinAbsolute(os.Getenv("RINGCENTRAL_SERVER_URL"), glip.APIPathGlipFiles),
-		query)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest(http.MethodPost, uploadURL.String(), file)
-	if err != nil {
-		return nil, err
-	}
-
-	rs := regexp.MustCompile(`(.[^.]+)$`).FindStringSubmatch(filepath)
-	if len(rs) < 2 {
-		return nil, err
-	}
-	req.Header.Add("Content-Type", mime.TypeByExtension(rs[1]))
-	req.Header.Add("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
-
-	return client.Do(req)
 }
 
 func getGroupsSet(client *http.Client, groupType string) (GroupsSet, error) {

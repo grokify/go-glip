@@ -5,22 +5,17 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"mime"
-	"net/http"
 	"os"
-	"regexp"
-	"strings"
 
+	"github.com/grokify/go-glip"
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
-	"github.com/grokify/mogo/net/urlutil"
 	"github.com/rs/zerolog/log"
 
-	"github.com/grokify/go-glip"
 	"github.com/grokify/go-glip/examples"
 )
 
@@ -83,7 +78,7 @@ func main() {
 	}
 
 	if 1 == 0 {
-		resp, err := postFile(httpClient, creds.OAuth2.ServerURL, group.ID, filepath)
+		resp, err := glip.PostFile(httpClient, creds.OAuth2.ServerURL, group.ID, filepath)
 		if err != nil {
 			log.Fatal().Err(err)
 		}
@@ -99,10 +94,11 @@ func main() {
 	log.Info().Msg("DONE")
 }
 
+/*
 func postFile(client *http.Client, serverURL, groupId string, filepath string) (*http.Response, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
-		return &http.Response{}, err
+		return nil, err
 	}
 
 	filepathParts := strings.Split(filepath, "/")
@@ -113,15 +109,16 @@ func postFile(client *http.Client, serverURL, groupId string, filepath string) (
 
 	req, err := http.NewRequest(http.MethodPost, uploadURL, file)
 	if err != nil {
-		return &http.Response{}, nil
+		return nil, nil
 	}
 
 	rs := regexp.MustCompile(`(.[^.]+)$`).FindStringSubmatch(filepath)
 	if len(rs) < 2 {
-		return &http.Response{}, err
+		return nil, err
 	}
-	req.Header.Add("Content-Type", mime.TypeByExtension(rs[1]))
-	req.Header.Add("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
+	req.Header.Add(httputilmore.HeaderContentType, mime.TypeByExtension(rs[1]))
+	req.Header.Add(httputilmore.HeaderContentDisposition, fmt.Sprintf(`attachment; filename="%s"`, filename))
 
 	return client.Do(req)
 }
+*/

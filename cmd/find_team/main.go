@@ -28,7 +28,6 @@ func main() {
 	opts := Options{}
 	_, err := flags.Parse(&opts)
 	logutil.FatalErr(err)
-
 	fmtutil.MustPrintJSON(opts)
 
 	creds, err := credentials.ReadCredentialsFromFile(opts.CredsPath, opts.Account, true)
@@ -47,9 +46,7 @@ func main() {
 
 	apiClient, err := ru.NewApiClientHttpClientBaseURL(
 		httpClient, serverURL)
-	if err != nil {
-		log.Fatal(err)
-	}
+	logutil.FatalErr(err)
 
 	set, err := glipgroups.NewGroupsSetApiRequest(httpClient, serverURL, "Team")
 	logutil.FatalErr(err)
