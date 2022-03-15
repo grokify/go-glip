@@ -29,16 +29,16 @@ func newGlipWebhookClientCore(urlOrGUID string, webhookVersion int) GlipWebhookC
 	return client
 }
 
-func NewGlipWebhookClient(urlOrGUID string, webhookVersion int) (GlipWebhookClient, error) {
+func NewGlipWebhookClient(urlOrGUID string, webhookVersion int) GlipWebhookClient {
 	client := newGlipWebhookClientCore(urlOrGUID, webhookVersion)
 	client.HTTPClient = httputilmore.NewHTTPClient()
-	return client, nil
+	return client
 }
 
-func NewGlipWebhookClientFast(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
-	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
+func NewGlipWebhookClientFast(urlOrGUID string, webhookVersion int) GlipWebhookClient {
+	client := newGlipWebhookClientCore(urlOrGUID, webhookVersion)
 	client.FastClient = fasthttp.Client{}
-	return client, nil
+	return client
 }
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
@@ -186,7 +186,7 @@ type GlipWebhookResponse struct {
 type GlipWebhookError struct {
 	Code           string                   `json:"code,omitempty"`
 	Message        string                   `json:"message,omitempty"`
-	HttpStatusCode int                      `json:"http_status_code,omitempty"`
+	HTTPStatusCode int                      `json:"http_status_code,omitempty"`
 	ResponseData   string                   `json:"response_data,omitempty"`
 	Response       GlipWebhookErrorResponse `json:"response,omitempty"`
 }

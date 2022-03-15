@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 
 	glipwebhook "github.com/grokify/go-glip"
@@ -21,11 +20,7 @@ func main() {
 	flag.StringVar(&hookURL, "hookurl", "https://hooks.glip.com/webhook/1111-deadbeef-8888", "Config file path")
 	flag.Parse()
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(hookURL, 1)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	client := glipwebhook.NewGlipWebhookClientFast(hookURL, 1)
 
 	msg := glipwebhook.GlipWebhookMessage{
 		Icon:  "https://d30y9cdsu7xlg0.cloudfront.net/png/6597-200.png",

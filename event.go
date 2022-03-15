@@ -14,7 +14,7 @@ type GlipEvent struct {
 	UUID           string          `json:"uuid,omitempty"`
 	Event          string          `json:"event,omitempty"`
 	Timestamp      time.Time       `json:"timestamp,omitempty"`
-	SubscriptionId string          `json:"subscriptionId,omitempty"`
+	SubscriptionID string          `json:"subscriptionId,omitempty"`
 	OwnerID        string          `json:"ownerId,omitempty"`
 	Body           TextMessageBody `json:"body,omitempty"`
 }

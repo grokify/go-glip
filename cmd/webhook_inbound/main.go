@@ -53,8 +53,7 @@ func main() {
 	_, err := flags.Parse(&opts)
 	logutil.FatalErr(err)
 
-	client, err := glipwebhook.NewGlipWebhookClientFast(opts.WebhookURLOrGUID, 1)
-	logutil.FatalErr(err)
+	client := glipwebhook.NewGlipWebhookClientFast(opts.WebhookURLOrGUID, 1)
 
 	if len(strings.TrimSpace(opts.File)) > 0 {
 		bytes, err := os.ReadFile(opts.File)
