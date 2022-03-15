@@ -98,7 +98,7 @@ func WebhookHandler(res http.ResponseWriter, req *http.Request) {
 		Msg("hook-body")
 }
 
-func getRingCentralApiClient() (*rc.APIClient, error) {
+func getRingCentralAPIClient() (*rc.APIClient, error) {
 	fmt.Println(os.Getenv("RINGCENTRAL_CORP_METABOT_TOKEN"))
 	rcHttpClient, err := goauth.NewClientTokenJSON(
 		context.Background(),
@@ -115,7 +115,7 @@ func getRingCentralApiClient() (*rc.APIClient, error) {
 
 func createWebhook(webhookURL string) error {
 	log.Info().Msg("Creating Hook...")
-	apiClient, err := getRingCentralApiClient()
+	apiClient, err := getRingCentralAPIClient()
 	if err != nil {
 		log.Fatal().Err(err)
 	}

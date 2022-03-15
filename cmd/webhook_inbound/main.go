@@ -10,6 +10,7 @@ import (
 	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/io/ioutilmore"
+	"github.com/grokify/mogo/log/logutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/valyala/fasthttp"
 
@@ -18,7 +19,7 @@ import (
 )
 
 const (
-	DEFAULT_URL           = "https://hooks.glip.com/webhook/1111-deadbeef-8888"
+	// DEFAULT_URL           = "https://hooks.glip.com/webhook/1111-deadbeef-8888"
 	ExampleTypeCard       = "card"
 	ExampleTypeSimple     = "simple"
 	ExampleTypeAlert      = "alert"
@@ -86,7 +87,7 @@ func main() {
 			log.Fatal(fmt.Sprintf("body type not found [%s]", opts.Type))
 		}
 
-		fmtutil.PrintJSON(msgs)
+		logutil.FatalErr(fmtutil.PrintJSON(msgs))
 		fmt.Printf("NUM_MSGS [%v]\n", len(msgs))
 
 		for _, msg := range msgs {

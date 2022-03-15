@@ -19,6 +19,7 @@ import (
 	ro "github.com/grokify/goauth/ringcentral"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/log/logutil"
 	"github.com/grokify/mogo/net/urlutil"
 )
 
@@ -53,7 +54,7 @@ func main() {
 
 	groups := set.FindGroupsByName(wantGroupName)
 
-	fmtutil.PrintJSON(groups)
+	logutil.FatalErr(fmtutil.PrintJSON(groups))
 
 	for i, group := range groups {
 		log.Printf("%d) %v %v\n", i, group.ID, group.Name)

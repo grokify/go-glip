@@ -1,7 +1,6 @@
 package glip
 
 import (
-	"regexp"
 	"strings"
 	"time"
 
@@ -9,13 +8,13 @@ import (
 )
 
 const (
-	webhookV2Path          string = "/webhook/v2/"
-	rxGlipWebhookV2Pattern string = `^https?://[^/]+/webhook/v2/[^/]+/?$`
-	rxGlipWebhookV1Pattern string = `^(?i)(https?://[^/]+)/webhook/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?$`
+// webhookV2Path string = "/webhook/v2/"
+// rxGlipWebhookV2Pattern string = `^https?://[^/]+/webhook/v2/[^/]+/?$`
+// rxGlipWebhookV1Pattern string = `^(?i)(https?://[^/]+)/webhook/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/?$`
 )
 
-var rxGlipWebhookV1 = regexp.MustCompile(rxGlipWebhookV1Pattern)
-var rxGlipWebhookV2 = regexp.MustCompile(rxGlipWebhookV2Pattern)
+// var rxGlipWebhookV1 = regexp.MustCompile(rxGlipWebhookV1Pattern)
+// var rxGlipWebhookV2 = regexp.MustCompile(rxGlipWebhookV2Pattern)
 
 func V1ToV2WewbhookUri(input string) (string, error) {
 	gw, err := NewWebhookURL(input)

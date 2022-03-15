@@ -8,6 +8,7 @@ import (
 
 	"github.com/grokify/goauth"
 	"github.com/grokify/mogo/config"
+	"github.com/grokify/mogo/log/logutil"
 	"github.com/grokify/mogo/net/httputilmore"
 )
 
@@ -31,6 +32,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	httputilmore.PrintResponse(resp, true)
+	logutil.FatalErr(httputilmore.PrintResponse(resp, true))
 	fmt.Println("DONE")
 }

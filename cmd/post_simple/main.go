@@ -11,6 +11,7 @@ import (
 	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/log/logutil"
 	"github.com/jessevdk/go-flags"
 	"github.com/rs/zerolog/log"
 )
@@ -31,7 +32,7 @@ func main() {
 		log.Fatal().Err(err).Msg("required properties not present")
 		panic("Z")
 	}
-	fmtutil.PrintJSON(opts)
+	logutil.FatalErr(fmtutil.PrintJSON(opts))
 
 	creds, err := credentials.ReadCredentialsFromFile(
 		opts.CredsPath, opts.Account, true)
