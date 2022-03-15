@@ -6,29 +6,26 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/grokify/mogo/net/httputilmore"
 	"github.com/grokify/mogo/net/urlutil"
 )
 
-func PostFile(client *http.Client, serverURL, groupID string, filepath string) (*http.Response, error) {
-	file, err := os.Open(filepath)
+func PostFile(client *http.Client, serverURL, groupID string, path string) (*http.Response, error) {
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 
-	filepathParts := strings.Split(filepath, "/")
-	filename := filepathParts[len(filepathParts)-1]
-
+	_, filename := filepath.Split(path)
 	query := url.Values{}
 	query.Add("groupId", groupID)
 	query.Add("name", filename)
 
 	uploadURL, err := urlutil.URLAddQueryValuesString(
-		urlutil.JoinAbsolute(
-			serverURL, APIPathGlipFiles),
+		urlutil.JoinAbsolute(serverURL, APIPathGlipFiles),
 		query)
 	if err != nil {
 		return nil, err
@@ -39,7 +36,7 @@ func PostFile(client *http.Client, serverURL, groupID string, filepath string) (
 		return nil, err
 	}
 
-	rs := regexp.MustCompile(`(.[^.]+)$`).FindStringSubmatch(filepath)
+	rs := regexp.MustCompile(`(.[^.]+)$`).FindStringSubmatch(path)
 	if len(rs) < 2 {
 		return nil, err
 	}
