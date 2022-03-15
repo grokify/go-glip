@@ -67,7 +67,7 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 
 func getRingCentralAPIClient() (*rc.APIClient, error) {
 	fmt.Println(os.Getenv("RINGCENTRAL_CORP_METABOT_TOKEN"))
-	rcHttpClient, err := goauth.NewClientTokenJSON(
+	rcHTTPClient, err := goauth.NewClientTokenJSON(
 		context.Background(),
 		[]byte(os.Getenv("RINGCENTRAL_CORP_METABOT_TOKEN")))
 	if err != nil {
@@ -75,7 +75,7 @@ func getRingCentralAPIClient() (*rc.APIClient, error) {
 	}
 
 	return ru.NewApiClientHttpClientBaseURL(
-		rcHttpClient,
+		rcHTTPClient,
 		os.Getenv("RINGCENTRAL_SERVER_URL"),
 	)
 }

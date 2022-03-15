@@ -12,26 +12,26 @@ import (
 )
 
 type GlipWebhookClient struct {
-	HttpClient     *http.Client
+	HTTPClient     *http.Client
 	FastClient     fasthttp.Client
-	WebhookUrl     string
+	WebhookURL     string
 	webhookVersion int
 }
 
-func newGlipWebhookClientCore(urlOrGuid string, webhookVersion int) GlipWebhookClient {
+func newGlipWebhookClientCore(urlOrGUID string, webhookVersion int) GlipWebhookClient {
 	if webhookVersion != 2 {
 		webhookVersion = 1
 	}
 	client := GlipWebhookClient{webhookVersion: webhookVersion}
-	if len(urlOrGuid) > 0 {
-		client.WebhookUrl = MustNewWebhookURLString(urlOrGuid, webhookVersion)
+	if len(urlOrGUID) > 0 {
+		client.WebhookURL = MustNewWebhookURLString(urlOrGUID, webhookVersion)
 	}
 	return client
 }
 
-func NewGlipWebhookClient(urlOrGuid string, webhookVersion int) (GlipWebhookClient, error) {
-	client := newGlipWebhookClientCore(urlOrGuid, webhookVersion)
-	client.HttpClient = httputilmore.NewHTTPClient()
+func NewGlipWebhookClient(urlOrGUID string, webhookVersion int) (GlipWebhookClient, error) {
+	client := newGlipWebhookClientCore(urlOrGUID, webhookVersion)
+	client.HTTPClient = httputilmore.NewHTTPClient()
 	return client, nil
 }
 
@@ -42,7 +42,7 @@ func NewGlipWebhookClientFast(urlOrGuid string, webhookVersion int) (GlipWebhook
 }
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {
-	return client.PostWebhook(client.WebhookUrl, message)
+	return client.PostWebhook(client.WebhookURL, message)
 }
 
 func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMessage) (*http.Response, error) {
@@ -57,11 +57,11 @@ func (client *GlipWebhookClient) PostWebhook(url string, message GlipWebhookMess
 	if err != nil {
 		return nil, err
 	}
-	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, msgBytes)
+	return httputilmore.DoJSONSimple(client.HTTPClient, http.MethodPost, url, map[string][]string{}, msgBytes)
 }
 
 func (client *GlipWebhookClient) PostWebhookV1Bytes(url string, message []byte) (*http.Response, error) {
-	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, message)
+	return httputilmore.DoJSONSimple(client.HTTPClient, http.MethodPost, url, map[string][]string{}, message)
 }
 
 func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhookMessage) (*http.Response, error) {
@@ -69,7 +69,7 @@ func (client *GlipWebhookClient) PostWebhookV2(url string, message v2.GlipWebhoo
 	if err != nil {
 		return nil, err
 	}
-	return httputilmore.DoJSONSimple(client.HttpClient, http.MethodPost, url, map[string][]string{}, msgBytes)
+	return httputilmore.DoJSONSimple(client.HTTPClient, http.MethodPost, url, map[string][]string{}, msgBytes)
 }
 
 func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhookMessage) (*http.Response, error) {
@@ -80,7 +80,7 @@ func (client *GlipWebhookClient) PostWebhookGUID(guid string, message GlipWebhoo
 // Recycle request and response using fasthttp.ReleaseRequest(req) and
 // fasthttp.ReleaseResponse(resp)
 func (client *GlipWebhookClient) PostMessageFast(message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
-	return client.PostWebhookFast(client.WebhookUrl, message)
+	return client.PostWebhookFast(client.WebhookURL, message)
 }
 
 func (client *GlipWebhookClient) PostWebhookFast(url string, message GlipWebhookMessage) (*fasthttp.Request, *fasthttp.Response, error) {
