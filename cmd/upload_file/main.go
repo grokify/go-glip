@@ -89,7 +89,7 @@ func postFile(client *http.Client, groupId string, filepath string) (*http.Respo
 	query.Add("name", filename)
 
 	uploadURL, err := urlutil.URLAddQueryValuesString(
-		urlutil.JoinAbsolute(os.Getenv("RINGCENTRAL_SERVER_URL"), glip.ApiPathGlipFiles),
+		urlutil.JoinAbsolute(os.Getenv("RINGCENTRAL_SERVER_URL"), glip.APIPathGlipFiles),
 		query)
 	if err != nil {
 		return nil, err

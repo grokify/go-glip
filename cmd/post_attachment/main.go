@@ -108,7 +108,7 @@ func postFile(client *http.Client, serverURL, groupId string, filepath string) (
 	filepathParts := strings.Split(filepath, "/")
 	filename := filepathParts[len(filepathParts)-1]
 
-	uploadURL := urlutil.JoinAbsolute(serverURL, glip.ApiPathGlipPosts)
+	uploadURL := urlutil.JoinAbsolute(serverURL, glip.APIPathGlipPosts)
 	//uploadURL := ro.BuildURL(serverURL, "/glip/posts", true, url.Values{})
 
 	req, err := http.NewRequest(http.MethodPost, uploadURL, file)

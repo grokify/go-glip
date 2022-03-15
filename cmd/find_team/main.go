@@ -95,7 +95,7 @@ func main() {
 					fmtutil.MustPrintJSON(thin)
 				}
 				if 1 == 0 {
-					fmtutil.PrintJSON(set.MergedUserMap["557601020"])
+					fmtutil.MustPrintJSON(set.MergedUserMap["557601020"])
 					user := set.MergedUserMap["557601020"]
 					thin := user.ToMergedUserThin()
 					fmtutil.MustPrintJSON(thin)

@@ -60,12 +60,12 @@ func main() {
 		bytes, err := os.ReadFile(opts.File)
 		logutil.FatalErr(err)
 
-		getBodyBytes(opts.WebhookUrlOrGuid, bytes)
+		logutil.FatalErr(getBodyBytes(opts.WebhookUrlOrGuid, bytes))
 	} else if len(strings.TrimSpace(opts.Data)) > 0 {
-		getBodyBytes(opts.WebhookUrlOrGuid, []byte(opts.Data))
+		logutil.FatalErr(getBodyBytes(opts.WebhookUrlOrGuid, []byte(opts.Data)))
 	} else if opts.Type == ExampleTypeCard {
-		getBodyBytes(opts.WebhookUrlOrGuid,
-			examples.ExampleHookBodyCardBytes())
+		logutil.FatalErr(getBodyBytes(opts.WebhookUrlOrGuid,
+			examples.ExampleHookBodyCardBytes()))
 	} else {
 		msgs := []glipwebhook.GlipWebhookMessage{}
 
