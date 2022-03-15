@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -20,6 +19,7 @@ import (
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
+	"github.com/jessevdk/go-flags"
 	"github.com/rs/zerolog/log"
 )
 
@@ -80,12 +80,8 @@ func getRingCentralAPIClient() (*rc.APIClient, error) {
 	)
 }
 
-func createWebhook(webhookURL string) error {
+func createWebhook(rcAPIClient *rc.APIClient, webhookURL string) error {
 	log.Info().Msg("Creating Hook...")
-	apiClient, err := getRingCentralAPIClient()
-	if err != nil {
-		return err
-	}
 
 	req := rc.CreateSubscriptionRequest{
 		EventFilters: []string{
@@ -101,7 +97,7 @@ func createWebhook(webhookURL string) error {
 	}
 	log.Info().Msg(jsonutil.MustMarshalString(req, true))
 
-	info, resp, err := apiClient.PushNotificationsApi.CreateSubscription(
+	info, resp, err := rcAPIClient.PushNotificationsApi.CreateSubscription(
 		context.Background(),
 		req,
 	)
@@ -115,20 +111,25 @@ func createWebhook(webhookURL string) error {
 	return fmtutil.PrintJSON(info)
 }
 
-func main() {
-	var webhookURL string
-	flag.StringVar(&webhookURL, "webhookurl", "", "Config file path")
-	flag.Parse()
+type Options struct {
+	WebhookURL    string `short:"w" long:"webhookurl" description:"Webhook URL"`
+	CreateWebhook []bool `short:"c" long:"create" description:"Create webhook"`
+}
 
-	err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
+func main() {
+	opts := Options{}
+	_, err := flags.Parse(&opts)
+	logutil.FatalErr(err)
+
+	err = config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
 	logutil.FatalErr(err)
 
 	appCfg := RingCentralConfig{}
 	err = env.Parse(&appCfg)
 	logutil.FatalErr(err)
 
-	if len(webhookURL) == 0 {
-		webhookURL = appCfg.WebhookURL
+	if len(opts.WebhookURL) == 0 {
+		opts.WebhookURL = appCfg.WebhookURL
 	}
 
 	http.HandleFunc("/webhook", WebhookHandler)
@@ -137,6 +138,11 @@ func main() {
 	go http.ListenAndServe(fmt.Sprintf(":%v", appCfg.AppPort), nil)
 	log.Printf("Server started at port %v", appCfg.AppPort)
 	//time.Sleep(3 * time.Second)
-	//createWebhook(webhookURL)
+	if len(opts.CreateWebhook) > 0 {
+		rcAPIClient, err := getRingCentralAPIClient()
+		logutil.FatalErr(err)
+		logutil.FatalErr(
+			createWebhook(rcAPIClient, opts.WebhookURL))
+	}
 	<-done
 }

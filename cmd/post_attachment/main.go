@@ -56,26 +56,24 @@ func main() {
 
 	fmt.Printf("Found Team [%v]\n", wantGroupName)
 
-	if 1 == 1 {
-		info, resp, err := apiClient.GlipApi.CreatePost(
-			context.Background(), group.ID, examples.ExamplePostBodyAlertWarning())
-		if err != nil {
-			log.Fatal().Err(err)
-		} else if resp.StatusCode >= 300 {
-			log.Fatal().Msg(fmt.Sprintf("Status [%v]", resp.StatusCode))
-		}
-		fmtutil.MustPrintJSON(info)
-		info, resp, err = apiClient.GlipApi.CreatePost(
-			context.Background(), group.ID, examples.ExamplePostBodyAlertSOS())
-		if err != nil {
-			log.Fatal().Err(err)
-		} else if resp.StatusCode >= 300 {
-			log.Fatal().
-				Int("status", resp.StatusCode).
-				Msg("response")
-		}
-		fmtutil.MustPrintJSON(info)
+	info, resp, err := apiClient.GlipApi.CreatePost(
+		context.Background(), group.ID, examples.ExamplePostBodyAlertWarning())
+	if err != nil {
+		log.Fatal().Err(err)
+	} else if resp.StatusCode >= 300 {
+		log.Fatal().Msg(fmt.Sprintf("Status [%v]", resp.StatusCode))
 	}
+	fmtutil.MustPrintJSON(info)
+	info, resp, err = apiClient.GlipApi.CreatePost(
+		context.Background(), group.ID, examples.ExamplePostBodyAlertSOS())
+	if err != nil {
+		log.Fatal().Err(err)
+	} else if resp.StatusCode >= 300 {
+		log.Fatal().
+			Int("status", resp.StatusCode).
+			Msg("response")
+	}
+	fmtutil.MustPrintJSON(info)
 
 	if 1 == 0 {
 		resp, err := glip.PostFile(httpClient, creds.OAuth2.ServerURL, group.ID, filepath)
