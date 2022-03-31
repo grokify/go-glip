@@ -211,8 +211,9 @@ github.com/grokify/go-scim-client v0.1.5/go.mod h1:k9d9uVLIqiac2zfQ2025tqseOfabl
 github.com/grokify/goauth v0.13.1 h1:0HwbIGxbH2FrbGXMlKYB715GRwDnYIr3yM3f6AlJ33s=
 github.com/grokify/goauth v0.13.1/go.mod h1:i1LkrLBs9teRZzCH7YtxIkAIqYvN7FozQ1k1R37gUpQ=
 github.com/grokify/gocharts v1.18.0/go.mod h1:EdFWliEHZyuydA1FhtpB+q99ksf/xrmTyOQggbobSW8=
-github.com/grokify/gohttp v0.2.0 h1:z1vJP+CApLRLLJVXnmFfQgkCI8NHw4Tvic6GuObDrSQ=
 github.com/grokify/gohttp v0.2.0/go.mod h1:lvWGlBA0PeelznQ5fFlr9GRbNOCsY86q5dmY9FqSlxE=
+github.com/grokify/gohttp v0.2.1 h1:9WRHON2OUcQOjbbs12rMSfmepZVzlUxB0etNX/gowCo=
+github.com/grokify/gohttp v0.2.1/go.mod h1:lvWGlBA0PeelznQ5fFlr9GRbNOCsY86q5dmY9FqSlxE=
 github.com/grokify/gostor v0.2.1/go.mod h1:4a6v+pcFFt4uxHThTcCcarL48EkMPe5Fc/0NvCQAifY=
 github.com/grokify/mogo v0.36.5/go.mod h1:GWl3aLE1O+K7If1Ekj4bDgi8pqVLQOzA25BR1A37IQs=
 github.com/grokify/mogo v0.37.3/go.mod h1:rvoGZyuR5f7Xy0UehTpAApQUv+rPpFY/W43LZcTJ+e8=
