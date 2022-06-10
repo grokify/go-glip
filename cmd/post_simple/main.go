@@ -44,7 +44,7 @@ func main() {
 
 	var httpClient *http.Client
 	if opts.UseCLI() {
-		httpClient, err = creds.NewClientCli("mystate")
+		httpClient, err = creds.NewClientCLI("mystate")
 	} else {
 		httpClient, err = creds.NewClient(context.Background())
 	}
@@ -69,7 +69,7 @@ func main() {
 		fmt.Printf("Found Team [%v]\n", opts.Group)
 	}
 
-	sclient, err := creds.NewSimpleClient(httpClient)
+	sclient, err := creds.NewSimpleClientHTTP(httpClient)
 	if err != nil {
 		log.Fatal().Err(err).
 			Msg("cannot create simpleclient")

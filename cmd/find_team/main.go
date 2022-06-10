@@ -36,7 +36,7 @@ func main() {
 	var httpClient *http.Client
 
 	if len(opts.CLI) > 0 {
-		httpClient, err = creds.NewClientCli("mystate")
+		httpClient, err = creds.NewClientCLI("mystate")
 	} else {
 		httpClient, err = creds.NewClient(context.Background())
 	}
