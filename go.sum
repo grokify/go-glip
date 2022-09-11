@@ -40,8 +40,8 @@ github.com/grokify/go-ringcentral-client v0.3.8 h1:6zUKa8HbD+M8xZeylHTxz2tRkiyN1
 github.com/grokify/go-ringcentral-client v0.3.8/go.mod h1:k687LbVQb1lJi92MNvqgM0q9fm5nfBO7Rjrg0v2s4yo=
 github.com/grokify/go-scim-client v0.1.8 h1:wojSwP7mpe5BQh6D8KpgiFhs55eiCfAyeVeARQu6cVU=
 github.com/grokify/go-scim-client v0.1.8/go.mod h1:/bynQPh0d19K973IkGTKz0XUcbdDcNKK3XH8zv5hLjU=
-github.com/grokify/goauth v0.16.0 h1:m/42nNXVpld3XSFeoadgKDvMaAPZXBNNp+Z27qALF7w=
-github.com/grokify/goauth v0.16.0/go.mod h1:PF0CTOhHSM3YBq5epu6fhD4Cy4CydIztq0Zq9pgs1us=
+github.com/grokify/goauth v0.16.2 h1:H1IkedCVJ5I2OtbdSNyVzVdziBIqSTNAW9rIGcaYJp8=
+github.com/grokify/goauth v0.16.2/go.mod h1:nsftcENLMdnExOgYE0Jp8nRkrzJ7EKbntxbqe0OHEfQ=
 github.com/grokify/gohttp v0.2.1 h1:9WRHON2OUcQOjbbs12rMSfmepZVzlUxB0etNX/gowCo=
 github.com/grokify/gohttp v0.2.1/go.mod h1:lvWGlBA0PeelznQ5fFlr9GRbNOCsY86q5dmY9FqSlxE=
 github.com/grokify/mogo v0.40.4 h1:IDGRHgRj5eaCsl6na0++xLikRsAgTIpf0cTt49du7fY=
