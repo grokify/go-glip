@@ -3,7 +3,7 @@ module github.com/grokify/go-glip
 go 1.18
 
 require (
-	github.com/caarlos0/env/v6 v6.10.0
+	github.com/caarlos0/env/v6 v6.10.1
 	github.com/grokify/go-ringcentral-client v0.3.8
 	github.com/grokify/goauth v0.16.2
 	github.com/grokify/gohttp v0.2.1
