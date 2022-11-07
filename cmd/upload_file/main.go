@@ -11,12 +11,13 @@ import (
 	"os"
 	"time"
 
-	glip "github.com/grokify/go-glip"
 	"github.com/grokify/goauth/credentials"
 	ro "github.com/grokify/goauth/ringcentral"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
+
+	glip "github.com/grokify/go-glip"
 )
 
 // main finds Glip groups matching the following command:

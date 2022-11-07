@@ -14,7 +14,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 	"github.com/valyala/fasthttp"
 
-	glipwebhook "github.com/grokify/go-glip"
+	glip "github.com/grokify/go-glip"
 	"github.com/grokify/go-glip/examples"
 )
 
@@ -53,7 +53,7 @@ func main() {
 	_, err := flags.Parse(&opts)
 	logutil.FatalErr(err)
 
-	client := glipwebhook.NewGlipWebhookClientFast(opts.WebhookURLOrGUID, 1)
+	client := glip.NewGlipWebhookClientFast(opts.WebhookURLOrGUID, 1)
 
 	if len(strings.TrimSpace(opts.File)) > 0 {
 		bytes, err := os.ReadFile(opts.File)
@@ -66,7 +66,7 @@ func main() {
 		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID,
 			examples.ExampleHookBodyCardBytes()))
 	} else {
-		msgs := []glipwebhook.GlipWebhookMessage{}
+		msgs := []glip.GlipWebhookMessage{}
 
 		opts.Type = strings.ToLower(strings.TrimSpace(opts.Type))
 		switch opts.Type {

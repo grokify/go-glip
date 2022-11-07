@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/grokify/go-glip"
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	"github.com/grokify/goauth/credentials"
@@ -16,6 +15,7 @@ import (
 	"github.com/grokify/mogo/log/logutil"
 	"github.com/rs/zerolog/log"
 
+	glip "github.com/grokify/go-glip"
 	"github.com/grokify/go-glip/examples"
 )
 

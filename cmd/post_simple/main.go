@@ -6,13 +6,14 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/grokify/go-glip/examples"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/rs/zerolog/log"
+
+	"github.com/grokify/go-glip/examples"
 )
 
 type Options struct {
