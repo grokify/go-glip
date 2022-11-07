@@ -10,7 +10,7 @@ import (
 	"github.com/grokify/goauth/credentials"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
-	"github.com/jessevdk/go-flags"
+	flags "github.com/jessevdk/go-flags"
 
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/mergedusers"

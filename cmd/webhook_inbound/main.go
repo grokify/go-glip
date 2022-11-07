@@ -11,7 +11,7 @@ import (
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/io/ioutilmore"
 	"github.com/grokify/mogo/log/logutil"
-	"github.com/jessevdk/go-flags"
+	flags "github.com/jessevdk/go-flags"
 	"github.com/valyala/fasthttp"
 
 	glipwebhook "github.com/grokify/go-glip"

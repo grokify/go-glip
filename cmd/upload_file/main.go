@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/grokify/go-glip"
+	glip "github.com/grokify/go-glip"
 	"github.com/grokify/goauth/credentials"
 	ro "github.com/grokify/goauth/ringcentral"
 	"github.com/grokify/mogo/config"
