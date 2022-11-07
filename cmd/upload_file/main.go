@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -58,7 +58,7 @@ func main() {
 		logutil.FatalErr(err)
 
 		log.Printf("Status %v\n", resp.StatusCode)
-		bytes, err := ioutil.ReadAll(resp.Body)
+		bytes, err := io.ReadAll(resp.Body)
 		logutil.FatalErr(err)
 
 		log.Printf("%v\n", string(bytes))
@@ -137,7 +137,7 @@ type GetGroupsResponse struct {
 }
 
 func GetGroupsResponseFromHTTPResponse(resp *http.Response) (GetGroupsResponse, error) {
-	bytes, err := ioutil.ReadAll(resp.Body)
+	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return GetGroupsResponse{}, err
 	}

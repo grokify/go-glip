@@ -66,9 +66,9 @@ func main() {
 					fmt.Printf("[%v/%v] %v", n, memberCount, memberID)
 					info, resp, err := apiClient.GlipApi.LoadPerson(context.Background(), memberID)
 					if err != nil {
-						log.Fatal(fmt.Sprintf("API ERR: %v\n", err))
+						log.Fatalf("API ERR: %v\n", err)
 					} else if resp.StatusCode >= 300 {
-						log.Fatal(fmt.Sprintf("API RESP %v\n", resp.StatusCode))
+						log.Fatalf("API RESP %v\n", resp.StatusCode)
 					}
 					fmtutil.MustPrintJSON(info)
 				}

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"regexp"
 
@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	GlipWebhookBaseURL = "https://hooks.glip.com/webhook/"
+	GlipWebhookBaseURL = "https://hooks.glip.com/webhook/" // #nosec G101
 )
 
 type GlipWebhookClient struct {
@@ -50,7 +50,7 @@ func (client *GlipWebhookClient) SendMessage(message GlipWebhookMessage) ([]byte
 		return []byte{}, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 func (client *GlipWebhookClient) PostMessage(message GlipWebhookMessage) (*http.Response, error) {

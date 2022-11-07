@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	GlipWebhookBaseURLProduction string = "https://hooks.glip.com/webhook/v2/"
-	GlipWebhookBaseURLSandbox    string = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/"
+	GlipWebhookBaseURLProduction string = "https://hooks.glip.com/webhook/v2/"                     // #nosec G101
+	GlipWebhookBaseURLSandbox    string = "https://hooks-glip.devtest.ringcentral.com/webhook/v2/" // #nosec G101
 	HTTPMethodPost               string = "POST"
 	FieldStyleLong               string = "Long"
 	FieldStyleShort              string = "Short"

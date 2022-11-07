@@ -79,7 +79,7 @@ func main() {
 		case ExampleTypeAttachment:
 			msgs = append(msgs, examples.ExampleHookBodyAttachment())
 		default:
-			log.Fatal(fmt.Sprintf("body type not found [%s]", opts.Type))
+			log.Fatalf("body type not found [%s]", opts.Type)
 		}
 
 		logutil.FatalErr(fmtutil.PrintJSON(msgs))

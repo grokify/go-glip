@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/grokify/go-glip"
@@ -81,7 +81,7 @@ func main() {
 			log.Fatal().Err(err)
 		}
 		log.Printf("Status %v\n", resp.StatusCode)
-		bytes, err := ioutil.ReadAll(resp.Body)
+		bytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatal().Err(err)
 		}

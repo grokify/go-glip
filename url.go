@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	rxGlipWebhookV1CaptureFmt = `^(?i)https?://[^/]+/webhook/([^/#?]+)`
-	rxGlipWebhookV2CaptureFmt = `^(?i)https?://[^/]+/webhook/v2/([^/#?]+)`
+	rxGlipWebhookV1CaptureFmt = `^(?i)https?://[^/]+/webhook/([^/#?]+)`    // #nosec G101
+	rxGlipWebhookV2CaptureFmt = `^(?i)https?://[^/]+/webhook/v2/([^/#?]+)` // #nosec G101
 )
 
 type WebhookURL struct {
