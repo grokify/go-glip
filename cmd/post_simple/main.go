@@ -35,23 +35,23 @@ func main() {
 	fmtutil.MustPrintJSON(opts)
 
 	creds, err := credentials.ReadCredentialsFromFile(
-		opts.CredsPath, opts.Account, true)
+		opts.Options.CredsPath, opts.Account, true)
 	if err != nil {
 		log.Fatal().Err(err).
-			Str("credsPath", opts.CredsPath).
-			Str("accountKey", opts.Account).
+			Str("credsPath", opts.Options.CredsPath).
+			Str("accountKey", opts.Options.Account).
 			Msg("cannot read credentials")
 	}
 
 	var httpClient *http.Client
-	if opts.UseCLI() {
+	if opts.Options.UseCLI() {
 		httpClient, err = creds.NewClientCLI("mystate")
 	} else {
 		httpClient, err = creds.NewClient(context.Background())
 	}
 	if err != nil {
 		log.Fatal().Err(err).
-			Bool("useCLI", opts.UseCLI()).
+			Bool("useCLI", opts.Options.UseCLI()).
 			Msg("creds.NewClient() or creds.NewClientCLI()")
 	}
 
