@@ -9,7 +9,7 @@ import (
 
 	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/fmt/fmtutil"
-	"github.com/grokify/mogo/io/ioutilmore"
+	"github.com/grokify/mogo/io/ioutil"
 	"github.com/grokify/mogo/log/logutil"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/valyala/fasthttp"
@@ -44,7 +44,7 @@ func getBodyBytes(webhookURLOrGUID string, body []byte) error {
 		return err
 	}
 	fmt.Printf("STATUS [%d]\n", resp.StatusCode)
-	fmt.Println(string(ioutilmore.ReadAllOrError(resp.Body)))
+	fmt.Println(string(ioutil.ReadAllOrError(resp.Body)))
 	return nil
 }
 
