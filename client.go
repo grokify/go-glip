@@ -7,7 +7,7 @@ import (
 	"time"
 
 	v2 "github.com/grokify/go-glip/v2"
-	"github.com/grokify/mogo/net/httputilmore"
+	"github.com/grokify/mogo/net/http/httputilmore"
 	"github.com/valyala/fasthttp"
 )
 

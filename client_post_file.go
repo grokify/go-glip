@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/grokify/mogo/mime/mimeutil"
-	"github.com/grokify/mogo/net/httputilmore"
+	"github.com/grokify/mogo/net/http/httputilmore"
 	"github.com/grokify/mogo/net/urlutil"
 )
 

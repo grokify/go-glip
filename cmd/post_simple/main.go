@@ -8,8 +8,8 @@ import (
 
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
 	"github.com/grokify/goauth/credentials"
-	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/fmt/fmtutil"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/rs/zerolog/log"
 
@@ -35,7 +35,7 @@ func main() {
 	fmtutil.MustPrintJSON(opts)
 
 	creds, err := credentials.ReadCredentialsFromFile(
-		opts.Options.CredsPath, opts.Account, true)
+		opts.Options.CredsPath, opts.Options.Account, true)
 	if err != nil {
 		log.Fatal().Err(err).
 			Str("credsPath", opts.Options.CredsPath).
@@ -78,10 +78,10 @@ func main() {
 
 	postURL := fmt.Sprintf("/restapi/v1.0/glip/chats/%s/adaptive-cards", group.ID)
 	sreq := httpsimple.SimpleRequest{
-		Method: http.MethodPost,
-		URL:    postURL,
-		Body:   examples.ExamplePostBodyCardBytes(),
-		IsJSON: true}
+		Method:   http.MethodPost,
+		URL:      postURL,
+		Body:     examples.ExamplePostBodyCardBytes(),
+		BodyType: httpsimple.BodyTypeJSON}
 	resp, err := sclient.Do(sreq)
 	if err != nil {
 		log.Fatal().Err(err).Msg("post request")

@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grokify/gohttp/httpsimple"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/io/ioutil"
 	"github.com/grokify/mogo/log/logutil"
+	"github.com/grokify/mogo/net/http/httpsimple"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/valyala/fasthttp"
 
@@ -36,10 +36,10 @@ type cliOptions struct {
 
 func getBodyBytes(webhookURLOrGUID string, body []byte) error {
 	resp, err := httpsimple.Do(httpsimple.SimpleRequest{
-		Method: http.MethodPost,
-		URL:    webhookURLOrGUID,
-		Body:   body,
-		IsJSON: true})
+		Method:   http.MethodPost,
+		URL:      webhookURLOrGUID,
+		Body:     body,
+		BodyType: httpsimple.BodyTypeJSON})
 	if err != nil {
 		return err
 	}
