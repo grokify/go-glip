@@ -118,7 +118,7 @@ func main() {
 	_, err := flags.Parse(&opts)
 	logutil.FatalErr(err)
 
-	err = config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
+	_, err = config.LoadDotEnv([]string{os.Getenv("ENV_PATH"), "./.env"}, 1)
 	logutil.FatalErr(err)
 
 	appCfg := RingCentralConfig{}

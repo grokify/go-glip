@@ -22,7 +22,7 @@ import (
 // main finds Glip groups matching the following command:
 // find_team -group "My Group Name"
 func main() {
-	err := config.LoadDotEnvSkipEmpty(os.Getenv("ENV_PATH"), "./.env")
+	_, err := config.LoadDotEnv([]string{os.Getenv("ENV_PATH"), "./.env"}, 1)
 	logutil.FatalErr(err)
 
 	var credsFile, credsKey, wantGroupName, filepath string
