@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
-	"github.com/grokify/goauth/credentials"
+	"github.com/grokify/goauth"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
 	flags "github.com/jessevdk/go-flags"
@@ -17,7 +17,7 @@ import (
 )
 
 type Options struct {
-	credentials.Options
+	goauth.Options
 	Groups    []string `short:"g" long:"group" description:"Group Name" required:"true"`
 	LoadUsers []bool   `short:"u" long:"users" description:"List Users"`
 }
@@ -30,7 +30,7 @@ func main() {
 	logutil.FatalErr(err)
 	fmtutil.MustPrintJSON(opts)
 
-	creds, err := credentials.ReadCredentialsFromFile(opts.Options.CredsPath, opts.Options.Account, true)
+	creds, err := goauth.ReadCredentialsFromFile(opts.Options.CredsPath, opts.Options.Account, true)
 	logutil.FatalErr(err)
 
 	var httpClient *http.Client

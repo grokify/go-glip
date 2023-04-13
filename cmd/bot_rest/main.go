@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/grokify/goauth"
+	"github.com/grokify/goauth/authutil"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/log/logutil"
 	"github.com/grokify/mogo/net/http/httputilmore"
@@ -15,7 +15,7 @@ func main() {
 	_, err := config.LoadDotEnv([]string{os.Getenv("ENV_PATH"), "./.env"}, 1)
 	logutil.FatalErr(err)
 
-	client, err := goauth.NewClientTokenJSON(
+	client, err := authutil.NewClientTokenJSON(
 		context.Background(),
 		[]byte(os.Getenv("RINGCENTRAL_TOKEN_JSON")),
 	)

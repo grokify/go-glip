@@ -15,7 +15,7 @@ import (
 	glip "github.com/grokify/go-glip"
 	rc "github.com/grokify/go-ringcentral-client/office/v1/client"
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
-	"github.com/grokify/goauth"
+	"github.com/grokify/goauth/authutil"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/encoding/jsonutil"
 	"github.com/grokify/mogo/fmt/fmtutil"
@@ -66,7 +66,7 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 
 func getRingCentralAPIClient() (*rc.APIClient, error) {
 	fmt.Println(os.Getenv("RINGCENTRAL_CORP_METABOT_TOKEN"))
-	rcHTTPClient, err := goauth.NewClientTokenJSON(
+	rcHTTPClient, err := authutil.NewClientTokenJSON(
 		context.Background(),
 		[]byte(os.Getenv("RINGCENTRAL_CORP_METABOT_TOKEN")))
 	if err != nil {

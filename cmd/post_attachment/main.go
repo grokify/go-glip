@@ -9,7 +9,7 @@ import (
 
 	ru "github.com/grokify/go-ringcentral-client/office/v1/util"
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
-	"github.com/grokify/goauth/credentials"
+	"github.com/grokify/goauth"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/log/logutil"
@@ -32,7 +32,7 @@ func main() {
 	flag.StringVar(&filepath, "file", "/path/to/myfile.png", "Filepath")
 	flag.Parse()
 
-	credsSet, err := credentials.ReadFileCredentialsSet(credsFile, true)
+	credsSet, err := goauth.ReadFileCredentialsSet(credsFile, true)
 	logutil.FatalErr(err)
 
 	creds, err := credsSet.Get(credsKey)

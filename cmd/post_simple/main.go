@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/grokify/go-ringcentral-client/office/v1/util/glipgroups"
-	"github.com/grokify/goauth/credentials"
+	"github.com/grokify/goauth"
 	"github.com/grokify/mogo/fmt/fmtutil"
 	"github.com/grokify/mogo/net/http/httpsimple"
 	flags "github.com/jessevdk/go-flags"
@@ -17,7 +17,7 @@ import (
 )
 
 type Options struct {
-	credentials.Options
+	goauth.Options
 	Group  string   `short:"g" long:"groupname" description:"Group Name" required:"true"`
 	URL    string   `short:"U" long:"url" description:"URL"`
 	Method string   `short:"X" long:"request" description:"Method"`
@@ -34,7 +34,7 @@ func main() {
 	}
 	fmtutil.MustPrintJSON(opts)
 
-	creds, err := credentials.ReadCredentialsFromFile(
+	creds, err := goauth.ReadCredentialsFromFile(
 		opts.Options.CredsPath, opts.Options.Account, true)
 	if err != nil {
 		log.Fatal().Err(err).

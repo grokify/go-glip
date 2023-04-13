@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/grokify/goauth/credentials"
+	"github.com/grokify/goauth"
 	ro "github.com/grokify/goauth/ringcentral"
 	"github.com/grokify/mogo/config"
 	"github.com/grokify/mogo/fmt/fmtutil"
@@ -37,7 +37,7 @@ func main() {
 	fmt.Printf("FILE %v\n", filepath)
 
 	httpClient, err := ro.NewClientPassword(
-		credentials.NewCredentialsOAuth2Env("RINGCENTRAL_"))
+		goauth.NewCredentialsOAuth2Env("RINGCENTRAL_"))
 	if err != nil {
 		panic(err)
 	}
