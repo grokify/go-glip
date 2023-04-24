@@ -10,6 +10,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	env "github.com/caarlos0/env/v6"
 	glip "github.com/grokify/go-glip"
@@ -129,11 +130,20 @@ func main() {
 		opts.WebhookURL = appCfg.WebhookURL
 	}
 
-	http.HandleFunc("/webhook", WebhookHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/webhook", WebhookHandler)
 
 	done := make(chan bool)
 	go func() {
-		if err := http.ListenAndServe(fmt.Sprintf(":%v", appCfg.AppPort), nil); err != nil &&
+		s := &http.Server{
+			Addr:           fmt.Sprintf(":%v", appCfg.AppPort),
+			Handler:        mux,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		}
+
+		if err := s.ListenAndServe(); err != nil &&
 			err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}
