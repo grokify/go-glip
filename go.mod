@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/grokify/go-ringcentral-client v0.3.15
-	github.com/grokify/goauth v0.20.1
+	github.com/grokify/goauth v0.20.2
 	github.com/grokify/mogo v0.55.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/rs/zerolog v1.30.0
