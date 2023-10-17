@@ -76,8 +76,8 @@ github.com/grokify/go-scim-client v0.1.16 h1:l9RcnqWn+JG4pE6p0ueGogu19/kkviJLwVB
 github.com/grokify/go-scim-client v0.1.16/go.mod h1:GyzWUKB88KCsJc3QtaCFWmEDFMikQVYL3aFmdNtAKzc=
 github.com/grokify/goauth v0.20.3 h1:+GyMM/IYNkNGFXaI6poMjX93DT3ktvs5osM/PeB7dQg=
 github.com/grokify/goauth v0.20.3/go.mod h1:s8xwNWbbMiW6kmTNDtSAx5j3+ouYboJJ3UxJgCfR5dg=
-github.com/grokify/mogo v0.56.0 h1:jJzSQfJfncONK9BqKjwzztSlqYSzuvHfQFw4v8ipji8=
-github.com/grokify/mogo v0.56.0/go.mod h1:vSTfEAy7vm2RaGgQBA6yfZERiHSKaZae1cMM2l9hL5o=
+github.com/grokify/mogo v0.57.0 h1:rQ9J40eFdKtw6uO3Zo6Fcgw3Ep5pYIaOJDpbzhd4DDE=
+github.com/grokify/mogo v0.57.0/go.mod h1:+XBRsHQBzmp05GFrlHFhpEjX5uTcOaLeU7fVcaIaaOI=
 github.com/huandu/xstrings v1.4.0 h1:D17IlohoQq4UcpqD7fDk80P7l+lwAmlFaBHgOipl2FU=
 github.com/huandu/xstrings v1.4.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/jessevdk/go-flags v1.5.0 h1:1jKYvbxEjfUl0fmqTCOfonvskHHXMjBySTLW4y9LFvc=
@@ -202,7 +202,7 @@ google.golang.org/appengine v1.6.8/go.mod h1:1jJ3jBArFh5pcgW8gCtRJnepW8FzD1V44FJ
 google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8/go.mod h1:JiN7NxoALGmiZfu7CAH4rXhgtRTLTxftemlI0sWmxmc=
 google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55/go.mod h1:DMBHOl98Agz4BDEuKkezgsaosCRResVns1a3J2ZsMNc=
 google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEYHJ7i3ixzK3sjbqSGDJWnxyFXZblF3eUsNvo=
-google.golang.org/genproto v0.0.0-20231002182017-d307bd883b97 h1:SeZZZx0cP0fqUyA+oRzP9k7cSwJlvDFiROO72uwD6i0=
+google.golang.org/genproto v0.0.0-20231012201019-e917dd12ba7a h1:fwgW9j3vHirt4ObdHoYNwuO24BEZjSzbh+zPaNWoiY8=
 google.golang.org/genproto/googleapis/api v0.0.0-20231002182017-d307bd883b97 h1:W18sezcAYs+3tDZX4F80yctqa12jcP1PUS2gQu1zTPU=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20231012201019-e917dd12ba7a h1:a2MQQVoTo96JC9PMGtGBymLp7+/RzpFc2yX/9WfFg1c=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20231012201019-e917dd12ba7a/go.mod h1:4cYg8o5yUbm77w8ZX00LhMVNl/YVBFJRYWDc0uYWMs0=
