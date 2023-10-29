@@ -2,7 +2,7 @@ module github.com/grokify/go-glip
 
 go 1.21
 
-toolchain go1.21.1
+// toolchain go1.21.1
 
 require (
 	github.com/caarlos0/env/v6 v6.10.1
