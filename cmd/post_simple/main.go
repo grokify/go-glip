@@ -77,7 +77,7 @@ func main() {
 	}
 
 	postURL := fmt.Sprintf("/restapi/v1.0/glip/chats/%s/adaptive-cards", group.ID)
-	sreq := httpsimple.SimpleRequest{
+	sreq := httpsimple.Request{
 		Method:   http.MethodPost,
 		URL:      postURL,
 		Body:     examples.ExamplePostBodyCardBytes(),

@@ -35,7 +35,7 @@ type cliOptions struct {
 }
 
 func getBodyBytes(webhookURLOrGUID string, body []byte) error {
-	resp, err := httpsimple.Do(httpsimple.SimpleRequest{
+	resp, err := httpsimple.Do(httpsimple.Request{
 		Method:   http.MethodPost,
 		URL:      webhookURLOrGUID,
 		Body:     body,
