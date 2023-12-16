@@ -23,9 +23,9 @@ func PostFile(client *http.Client, serverURL, groupID, path string) (*http.Respo
 	query.Add("groupId", groupID)
 	query.Add("name", filename)
 
-	uploadURL, err := urlutil.URLAddQueryValuesString(
+	uploadURL, err := urlutil.URLStringAddQuery(
 		urlutil.JoinAbsolute(serverURL, APIPathGlipFiles),
-		query)
+		query, false)
 	if err != nil {
 		return nil, err
 	}
