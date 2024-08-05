@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,8 +35,8 @@ type cliOptions struct {
 	Data             string `short:"d" long:"data" description:"JSON to use for body"`
 }
 
-func getBodyBytes(webhookURLOrGUID string, body []byte) error {
-	resp, err := httpsimple.Do(httpsimple.Request{
+func getBodyBytes(ctx context.Context, webhookURLOrGUID string, body []byte) error {
+	resp, err := httpsimple.Do(ctx, httpsimple.Request{
 		Method:   http.MethodPost,
 		URL:      webhookURLOrGUID,
 		Body:     body,
@@ -59,11 +60,11 @@ func main() {
 		bytes, err := os.ReadFile(opts.File)
 		logutil.FatalErr(err)
 
-		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID, bytes))
+		logutil.FatalErr(getBodyBytes(context.Background(), opts.WebhookURLOrGUID, bytes))
 	} else if len(strings.TrimSpace(opts.Data)) > 0 {
-		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID, []byte(opts.Data)))
+		logutil.FatalErr(getBodyBytes(context.Background(), opts.WebhookURLOrGUID, []byte(opts.Data)))
 	} else if opts.Type == ExampleTypeCard {
-		logutil.FatalErr(getBodyBytes(opts.WebhookURLOrGUID,
+		logutil.FatalErr(getBodyBytes(context.Background(), opts.WebhookURLOrGUID,
 			examples.ExampleHookBodyCardBytes()))
 	} else {
 		msgs := []glip.GlipWebhookMessage{}
