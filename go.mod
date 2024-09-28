@@ -11,7 +11,7 @@ require (
 	github.com/grokify/mogo v0.64.11
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/rs/zerolog v1.33.0
-	github.com/valyala/fasthttp v1.55.0
+	github.com/valyala/fasthttp v1.56.0
 )
 
 require (
