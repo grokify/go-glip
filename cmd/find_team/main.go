@@ -30,7 +30,7 @@ func main() {
 	logutil.FatalErr(err)
 	fmtutil.MustPrintJSON(opts)
 
-	creds, err := goauth.ReadCredentialsFromFile(opts.Options.CredsPath, opts.Options.Account, true)
+	creds, err := goauth.ReadCredentialsFromSetFile(opts.Options.CredsPath, opts.Options.Account, true)
 	logutil.FatalErr(err)
 
 	var httpClient *http.Client

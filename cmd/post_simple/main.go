@@ -34,7 +34,7 @@ func main() {
 	}
 	fmtutil.MustPrintJSON(opts)
 
-	creds, err := goauth.ReadCredentialsFromFile(
+	creds, err := goauth.ReadCredentialsFromSetFile(
 		opts.Options.CredsPath, opts.Options.Account, true)
 	if err != nil {
 		log.Fatal().Err(err).
