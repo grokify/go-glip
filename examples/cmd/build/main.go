@@ -22,12 +22,12 @@ func main() {
 			log.Fatal(err)
 		}
 		err = os.WriteFile(
-			fmt.Sprintf("example_hook_%s_min.json", exp.Stub), min, 0644)
+			fmt.Sprintf("example_hook_%s_min.json", exp.Stub), min, 0600)
 		if err != nil {
 			log.Fatal(err)
 		}
 		err = os.WriteFile(
-			fmt.Sprintf("example_hook_%s_sp2.json", exp.Stub), max, 0644)
+			fmt.Sprintf("example_hook_%s_sp2.json", exp.Stub), max, 0600)
 		if err != nil {
 			log.Fatal(err)
 		}

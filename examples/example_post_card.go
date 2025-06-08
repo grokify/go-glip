@@ -60,7 +60,7 @@ func ExamplePostBodyCardBytes() []byte {
 				"facts": [
 				{
 					"title": "Current location:",
-					"value": "On board the Millenium Falcon"
+					"value": "On board the Millennium Falcon"
 				},
 				{
 					"title": "Source:",
