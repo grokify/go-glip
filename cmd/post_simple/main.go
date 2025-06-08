@@ -82,7 +82,7 @@ func main() {
 		URL:      postURL,
 		Body:     examples.ExamplePostBodyCardBytes(),
 		BodyType: httpsimple.BodyTypeJSON}
-	resp, err := sclient.Do(sreq)
+	resp, err := sclient.Do(context.Background(), sreq)
 	if err != nil {
 		log.Fatal().Err(err).Msg("post request")
 	} else if resp.StatusCode > 299 {
