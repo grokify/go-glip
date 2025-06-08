@@ -1,5 +1,4 @@
-Glip Webhook Client in Go
-=========================
+# Glip Webhook Client in Go
 
 [![Build Status][build-status-svg]][build-status-url]
 [![Lint Status][lint-status-svg]][lint-status-url]
@@ -88,9 +87,9 @@ res, resp, err := client.PostWebhookFast(url, msg)
 res, resp, err := client.PostWebhookGUIDFast(guid, msg)
 ```
 
- [build-status-svg]: https://github.com/grokify/go-glip/workflows/test/badge.svg
- [build-status-url]: https://github.com/grokify/go-glip/actions/workflows/test.yaml
- [lint-status-svg]: https://github.com/grokify/go-glip/workflows/lint/badge.svg
+ [build-status-svg]: https://github.com/grokify/go-glip/actions/workflows/ci.yaml/badge.svg?branch=master
+ [build-status-url]: https://github.com/grokify/go-glip/actions/workflows/ci.yaml
+ [lint-status-svg]: https://github.com/grokify/go-glip/actions/workflows/lint.yaml/badge.svg?branch=master
  [lint-status-url]: https://github.com/grokify/go-glip/actions/workflows/lint.yaml
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-glip
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/go-glip
