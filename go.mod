@@ -6,7 +6,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/grokify/go-ringcentral-client v0.3.29
 	github.com/grokify/goauth v0.23.14
-	github.com/grokify/mogo v0.70.4
+	github.com/grokify/mogo v0.70.6
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/rs/zerolog v1.34.0
 	github.com/valyala/fasthttp v1.62.0
