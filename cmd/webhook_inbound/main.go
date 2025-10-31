@@ -40,7 +40,7 @@ func getBodyBytes(ctx context.Context, webhookURLOrGUID string, body []byte) err
 		Method:   http.MethodPost,
 		URL:      webhookURLOrGUID,
 		Body:     body,
-		BodyType: httpsimple.BodyTypeJSON}.Do(ctx)
+		BodyType: httpsimple.BodyTypeJSON}.Do(ctx, nil)
 	if err != nil {
 		return err
 	}
