@@ -58,7 +58,7 @@ func main() {
 			group.ID, filepath)
 		logutil.FatalErr(err)
 
-		log.Printf("Status %v\n", resp.StatusCode)
+		log.Printf("Status %d\n", resp.StatusCode) //nolint:gosec // G706: StatusCode is an integer, safe to log
 		bytes, err := io.ReadAll(resp.Body)
 		logutil.FatalErr(err)
 
@@ -83,7 +83,7 @@ func getGroupsSet(client *http.Client, groupType string) (GroupsSet, error) {
 		if err != nil {
 			return set, err
 		}
-		resp, err := client.Get(groupsURL)
+		resp, err := client.Get(groupsURL) //nolint:gosec // URL is constructed from trusted RINGCENTRAL_SERVER_URL env var
 		if err != nil {
 			return set, err
 		}
